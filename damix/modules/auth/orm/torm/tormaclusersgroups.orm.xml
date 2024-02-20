@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm>
+	<table name="aclusersgroups" realname="aclusersgroups">
+		<record>
+			<property name="idaclusersgroups" realname="idaclusersgroups" datatype="bigint" format="varchar" locale="auth~lclorm.tormaclusersgroups.idaclusersgroups" default="NULL" unsigned="true" autoincrement="true"/>
+			<property name="login" realname="login" datatype="varchar" size="255" locale="auth~lclorm.tormusers.login" null="true" default="NULL" />
+			<property name="groupcode" realname="groupcode" datatype="varchar" size="255" locale="auth~lclorm.tormaclgroups.code" null="true" default="NULL" unsigned="true"/>
+		</record>
+		<primarykeys>
+			<primarykey name="idaclusersgroups"/>
+		</primarykeys>
+		<foreignkeys>
+			<foreignkey name="fk_aclusersgroups_groupcode" property="groupcode" ref="auth~tormaclgroups:code"/>
+		</foreignkeys>
+		<indexes>
+			<index realname="fk_aclusersgroups_groupcode" type="index">
+				<property name="groupcode"/>
+			</index>
+		</indexes>
+		<triggers/>
+		<options>
+			<option driver="mariadb" name="engine" value="InnoDB"/>
+		</options>
+	</table>
+</orm>

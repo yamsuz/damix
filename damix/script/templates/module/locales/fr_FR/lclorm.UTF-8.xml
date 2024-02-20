@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<compiler version="1.0" driver="locale">
+	<section name="tormfilm">
+		<locale name="tormfilm.idfilm">Film</locale>
+		<locale name="tormfilm.titre">Titre</locale>
+		<locale name="tormfilm.annee">Année</locale>
+		<locale name="tormfilm.duree">Durée</locale>
+		<locale name="tormfilm.resume">Résumé</locale>
+	</section>
+	<section name="tormgenre">
+		<locale name="tormgenre.idgenre">Genre</locale>
+	</section>
+</compiler>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm>
+	<table name="aclgroups" realname="aclgroups">
+		<record>
+			<property name="idaclgroups" realname="idaclgroups" datatype="bigint" format="varchar" locale="auth~lclorm.tormaclgroups.idaclgroups" default="NULL" unsigned="true" autoincrement="true"/>
+			<property name="code" realname="code" datatype="varchar" size="255" null="true" locale="auth~lclorm.tormaclgroups.code" default="NULL"/>
+			<property name="label" realname="label" datatype="varchar" size="255" null="true" locale="auth~lclorm.tormaclgroups.label" default="NULL"/>
+		</record>
+		<primarykeys>
+			<primarykey name="idaclgroups"/>
+		</primarykeys>
+		<foreignkeys/>
+		<indexes>
+			<index realname="idx_aclgroups_code" type="unique">
+				<property name="code"/>
+			</index>
+		</indexes>
+		<triggers/>
+		<options>
+			<option driver="mariadb" name="engine" value="InnoDB"/>
+		</options>
+	</table>
+</orm>

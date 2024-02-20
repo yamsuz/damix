@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<compiler version="1.0" driver="orm">
+	<factory>
+		<method type="select" name="loadrightsubject">
+			<display>
+				<property ref="auth~tormaclsubjects:subject"/>
+				<property ref="auth~tormaclrights:cancel"/>
+				
+			</display>
+			<joins>
+				<join type="from" ref="auth~tormaclsubjects" />
+				
+				<join type="join" ref="auth~tormaclrights:subject" join="left">
+					<condition ref="auth~tormaclrights:subject" with="auth~tormaclsubjects:subject" />
+				</join>
+			</joins>
+		</method>
+				
+	</factory>
+</compiler>

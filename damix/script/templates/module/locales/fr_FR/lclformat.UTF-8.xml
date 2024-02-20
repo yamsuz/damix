@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<compiler version="1.0" driver="locale">
+	<section name="tiers">
+		<locale name="tiers.fiche.creation">Voulez-vous créer le tiers ?</locale>
+		<locale name="tiers.fiche.suppression">Voulez-vous supprimer le tiers %2$s, fiche n°%1$d ?</locale>
+	</section>
+</compiler>

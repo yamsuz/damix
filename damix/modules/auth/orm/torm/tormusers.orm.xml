@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm>
+	<table name="users" realname="users">
+		<record>
+			<property name="idusers" realname="idusers" datatype="bigint" format="varchar" locale="auth~lclorm.tormusers.idusers" default="NULL" unsigned="true" autoincrement="true"/>
+			<property name="login" realname="login" datatype="varchar" size="255" locale="auth~lclorm.tormusers.login" null="true" default="NULL" />
+			<property name="password" realname="password" datatype="varchar" size="255" locale="auth~lclorm.tormusers.password" null="true" default="NULL" />
+		</record>
+		<primarykeys>
+			<primarykey name="idusers"/>
+		</primarykeys>
+		<foreignkeys></foreignkeys>
+		<indexes>
+			<index realname="unk_users_login" type="unique">
+				<property name="login"/>
+			</index>
+		</indexes>
+		<triggers/>
+		<options>
+			<option driver="mariadb" name="engine" value="InnoDB"/>
+		</options>
+	</table>
+</orm>

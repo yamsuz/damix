@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locales version="1.0">
+	<section name="core">
+		<locale name="core.template.tag.function.invalid">(301)Dans le template %2$s la syntaxe de la fonction %1$s est invalide</locale>
+		<locale name="core.locale.compilation.invalid">La compilation des locales %1$s est impossible.</locale>
+	</section>
+	 
+</locales>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<compiler version="1.0" driver="locale">
+	<section name="tiers">
+		<locale name="tiers.fiche.creation">Would you like create the customer?</locale>
+		<locale name="tiers.fiche.suppression">Would you like delete the customer %2$s with the number n°%1$d?</locale>
+	</section>
+</compiler>

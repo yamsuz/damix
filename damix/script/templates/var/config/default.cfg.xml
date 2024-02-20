@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<setting version="1.0">
+	<section name="general">
+		<config name="startmodule" value="bapteme"/>
+		<config name="startaction" value="ctrinscriptionliste:index"/>
+		<config name="langue" value="fr_FR"/>
+		<config name="charset" value="UTF-8"/>
+	</section>
+	<section name="filesystem">
+		<config name="userchown" value="www-data"/>
+		<config name="groupchown" value="www-data"/>
+		<config name="filechmod" value="0775"/>
+		<config name="dirchmod" value="0775"/>
+	</section>
+	<section name="url">
+		<config name="engines" value="basic"/>
+		<config name="basepath" value="damix"/>
+		<config name="scriptname" value="index.php"/>
+	</section>
+	<section name="log">
+		<config name="driver" value="file"/>
+	</section>
+	<section name="logfile">
+		<config name="default" value="message.log"/>
+		<config name="sql" value="sql.log"/>
+		<config name="error" value="error.log"/>
+	</section>
+	<section name="response">
+		<config name="html" value="classic~myhtmlresponse"/>
+	</section>
+	<section name="session">
+		<config name="driver" value="file"/>
+	</section>
+</setting>

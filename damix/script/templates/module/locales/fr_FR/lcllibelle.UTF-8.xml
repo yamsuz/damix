@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<compiler version="1.0" driver="locale">
+	<section name="crud">
+		<locale name="crud.chercher">Chercher</locale>
+		<locale name="crud.modifier">Modifier</locale>
+		<locale name="crud.supprimer">Supprimer</locale>
+		<locale name="crud.enregistrer">Enregistrer</locale>
+	</section>
+</compiler>

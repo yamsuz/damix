@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm>
+	<table name="aclsubjects" realname="aclsubjects">
+		<record>
+			<property name="idaclsubject" realname="idaclsubject" datatype="bigint" format="varchar" locale="auth~lclorm.tormaclsubjects.idaclsubject" default="NULL" unsigned="true" autoincrement="true"/>
+			<property name="subject" realname="subject" datatype="varchar" size="255" null="true" locale="auth~lclorm.tormaclsubjects.subject" default="NULL" />
+			<property name="label" realname="label" datatype="varchar" size="255" null="true" locale="auth~lclorm.tormaclsubjects.label" default="NULL" />
+		</record>
+		<primarykeys>
+			<primarykey name="idaclsubject"/>
+		</primarykeys>
+		<foreignkeys/>
+		<indexes>
+			<index realname="idx_aclsubjects_subject" type="unique">
+				<property name="subject"/>
+			</index>
+		</indexes>
+		<triggers/>
+		<options>
+			<option driver="mariadb" name="engine" value="InnoDB"/>
+		</options>
+	</table>
+</orm>

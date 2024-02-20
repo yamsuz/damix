@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<compiler version="1.0" driver="locale">
+	<section name="user">
+		<locale name="tormaclgroups.code">Groupe</locale>
+		<locale name="tormaclgroups.idaclgroups">idaclgroups</locale>
+		<locale name="tormaclgroups.label">label</locale>
+		<locale name="tormaclrights.cancel">cancel</locale>
+		<locale name="tormaclrights.idaclright">idaclright</locale>
+		<locale name="tormaclsujects.idaclsubject">idaclsubject</locale>
+		<locale name="tormaclsujects.label">label</locale>
+		<locale name="tormaclsujects.subject">subject</locale>
+		<locale name="tormaclusersgroups.idaclusersgroups">idaclusersgroups</locale>
+		<locale name="tormusers.idusers">idusers</locale>
+		<locale name="tormusers.login">Nom d'utilisateur</locale>
+		<locale name="tormusers.password">password</locale>
+	</section>
+</compiler>

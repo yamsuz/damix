@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm>
+	<table name="sessions" realname="sessions">
+		<record>
+			<property name="idsessions" realname="idsessions" datatype="varchar" size="255" autoincrement="false" format="varchar" locale="damix~lclorm.sessions.idsessions" default="NULL" />
+			<property name="user" realname="user" datatype="varchar" size="255" null="true" locale="damix~lclorm.sessions.user" default="NULL"/>
+			<property name="create" realname="create" datatype="datetime" null="true" locale="damix~lclorm.sessions.create" default="NULL" insertpattern="now"/>
+			<property name="update" realname="update" datatype="datetime" null="true" locale="damix~lclorm.sessions.update" default="NULL" updatepattern="now" />
+			<property name="data" realname="data" datatype="text" null="true" locale="damix~lclorm.sessions.data" default="NULL"/>
+		</record>
+		<primarykeys>
+			<primarykey name="idsessions"/>
+		</primarykeys>
+		<foreignkeys/>
+		<indexes>
+			<index realname="idx_sessions_user" type="index">
+				<property name="user"/>
+			</index>
+			<index realname="idx_sessions_update" type="index">
+				<property name="update"/>
+			</index>
+		</indexes>
+		<triggers>
+			
+		</triggers>
+		<options>
+			<option driver="mariadb" name="engine" value="InnoDB"/>
+		</options>
+		<events>
+		</events>
+	</table>
+</orm>

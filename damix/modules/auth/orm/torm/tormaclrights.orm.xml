@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orm>
+	<table name="aclrights" realname="aclrights">
+		<record>
+			<property name="idaclright" realname="idaclright" datatype="bigint" format="varchar" locale="auth~lclorm.tormaclrights.idaclright" default="NULL" unsigned="true" autoincrement="true"/>
+			<property name="subject" realname="subject" datatype="varchar" size="255" locale="auth~lclorm.tormaclsujects.subject" null="true" default="NULL" unsigned="true"/>
+			<property name="groupcode" realname="groupcode" datatype="varchar" size="255" locale="auth~lclorm.tormaclgroups.idaclgroups" null="true" default="NULL" unsigned="true"/>
+			<property name="cancel" realname="cancel" datatype="bool" locale="auth~lclorm.tormaclrights.cancel" null="false" default="0" />
+		</record>
+		<primarykeys>
+			<primarykey name="idaclright"/>
+		</primarykeys>
+		<foreignkeys>
+			<foreignkey name="fk_aclrights_subject" property="subject" ref="auth~tormaclsubjects:subject"/>
+			<foreignkey name="fk_aclrights_groupcode" property="groupcode" ref="auth~tormaclgroups:code"/>
+		</foreignkeys>
+		<indexes>
+			<index realname="fk_aclrights_subject" type="index">
+				<property name="subject"/>
+			</index>
+			<index realname="fk_aclrights_groupcode" type="index">
+				<property name="groupcode"/>
+			</index>
+		</indexes>
+		<triggers/>
+		<options>
+			<option driver="mariadb" name="engine" value="InnoDB"/>
+		</options>
+	</table>
+</orm>

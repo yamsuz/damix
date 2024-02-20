@@ -1,0 +1,1 @@
+<select {foreach $params as $name=>$value}{$name}="{$value}" {/foreach}>{$html}</select>

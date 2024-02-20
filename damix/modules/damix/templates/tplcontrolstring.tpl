@@ -1,0 +1,1 @@
+<input type="text" {foreach $params as $name=>$value}{$name}="{$value}" {/foreach} value="{$value1}"/>
