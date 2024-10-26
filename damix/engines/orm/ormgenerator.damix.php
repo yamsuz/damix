@@ -446,12 +446,10 @@ class OrmGenerator
             $this->appendFunction( 'selectRequest', array(), $tablecontent, 'public');
             
             
-            
-            
             $tablecontent = array();
 
             $tablecontent[] = '$c = $this->getConditionsClear( \'get\' );';
-            $tablecontent[] = '$c->addString( $this->_primarykeys[\'realname\'], \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, $id );';
+            $tablecontent[] = '$c->addInt( \''. $selector->_selector .':\' . $this->_primarykeys[\'realname\'], \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, intval($id) );';
             $tablecontent[] = '$obj = \damix\engines\orm\method\OrmMethod::execute( \''. $selector->_selector .':get\', $this );';
             $tablecontent[] = '$cs = new \damix\engines\orm\conditions\OrmConditions();';
             $tablecontent[] = '$cs->add( $c );';

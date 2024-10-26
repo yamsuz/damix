@@ -25,9 +25,12 @@ class Datatable
         $params = $this->getParams();
         $draw = $params[ 'draw' ] ?? 0;
         $list = $params[ 'list' ] ?? array();
+        $start = $params[ 'start' ] ?? 0;
+        $length = $params[ 'length' ] ?? 100;
 		
 		
 		$list[ 'draw' ] = $draw;
+		$list[ 'page' ] = array( 'start' => $start, 'length' => $length );
         $orders = $params[ 'order' ] ?? array();
         $columns = $params[ 'columns' ] ?? array();
         $selector = $list['selector'] ?? false;
@@ -48,13 +51,52 @@ class Datatable
 				
 				$out->draw = $draw + 1;
             }
-        }
-
+        }		
 		
         $rep->data = $out;
         return $rep;
 	}
 	
+	
+	public function export() 
+    {
+        $rep = $this->getResponse( 'binary' );
+		
+		
+        $out = array();
+        $params = $this->getParams();
+        $list = json_decode($params[ '@list' ], true);
+        
+		if( \damix\engines\acls\Acl::check('damix.datatable.menu.export') )
+		{
+			$orders = $params[ 'order' ] ?? array();
+			$columns = $params[ 'columns' ] ?? array();
+			$selector = $list['selector'] ?? null;
+			
+			if( $list['selector'] )
+			{
+				$obj = \damix\engines\datatables\Datatable::get( $list['selector'] );
+				if( $obj )
+				{
+					$fileName = $obj->exportData( $list );
+				}
+			}
+
+			$outputFileName = 'export_' . date( 'd' ) . '_' . date( 'm' ) . '_' . date( 'Y' ) . '.csv';
+			$doDownload = true;
+			
+			$rep->mimeType = 'text/csv';
+			$rep->fileName = $fileName;
+			$rep->outputFileName = $outputFileName;
+			$rep->doDownload = $doDownload;
+			$rep->content = file_get_contents( $fileName );
+			
+			\damix\engines\tools\xFile::remove( $fileName );
+		}
+		
+		
+        return $rep;
+    }
 	
 		
 }

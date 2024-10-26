@@ -35,6 +35,11 @@ class AuthFile
 		return null;
 	}
 	
+	public function getDriverName() : string
+	{
+		return 'file';
+	}
+	
 	private function getFilename() : string
 	{
 		$filename = \damix\engines\settings\Setting::getValue('default', 'auth', 'filename');

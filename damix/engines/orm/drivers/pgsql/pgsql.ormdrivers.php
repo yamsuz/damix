@@ -24,6 +24,11 @@ class OrmDriversPgsql
 		return '';
 	}
 	
+	public function isCaseManagement() : bool 
+	{
+		return true;
+	}
+	
 	protected function getRequestSQLCreateOption(\damix\engines\orm\request\structure\OrmTable $table) : string
 	{
 		$out = array();
@@ -350,7 +355,7 @@ class OrmDriversPgsql
 			\damix\engines\orm\request\structure\OrmDataType::ORM_CHAR => 'char(' . $field->getSize() . ')',
 			\damix\engines\orm\request\structure\OrmDataType::ORM_VARCHAR => 'varchar(' . $field->getSize() . ')',
 			\damix\engines\orm\request\structure\OrmDataType::ORM_TEXT => 'text',
-			\damix\engines\orm\request\structure\OrmDataType::ORM_LONGTEXT => 'longtext',
+			\damix\engines\orm\request\structure\OrmDataType::ORM_LONGTEXT => 'text',
 			\damix\engines\orm\request\structure\OrmDataType::ORM_BINARY => 'BYTEA',
 			\damix\engines\orm\request\structure\OrmDataType::ORM_BLOB => 'BYTEA',
 			\damix\engines\orm\request\structure\OrmDataType::ORM_LONGBLOB => 'BYTEA',
@@ -577,11 +582,74 @@ class OrmDriversPgsql
 		
 		$schemaname = $ormtable->getSchema()?->getRealname();
 		
-		$c->addString( array( 'table' => 'COLUMNS', 'field' => 'TABLE_SCHEMA'), \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, ($this->isSchema() && !empty($schemaname)? $schemaname : $this->_cnx->getDatabase() ));
+		if( $this->isSchema() && !empty($schemaname) )
+		{
+			$c->addString( array( 'table' => 'COLUMNS', 'field' => 'TABLE_SCHEMA'), \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, $schemaname );
+		}
+		$c->addString( array( 'table' => 'COLUMNS', 'field' => 'TABLE_CATALOG'), \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, $this->_cnx->getDatabase());
 		$c->addString( array( 'table' => 'COLUMNS', 'field' => 'TABLE_NAME'), \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, $ormtable->getRealname());
 
 
 
         return $request;
 	}
+	
+	public function DataTypeCast( string $value ) : \damix\engines\orm\request\structure\OrmDataType
+	{
+		
+		switch( $value )
+		{
+			case 'character varying' :
+				return \damix\engines\orm\request\structure\OrmDataType::ORM_VARCHAR;
+			case 'timestamp with time zone' :
+				return \damix\engines\orm\request\structure\OrmDataType::ORM_DATETIME;
+		}
+		return parent::DataTypeCast( $value );
+	}
+
+	// public function getOperator(\damix\engines\orm\conditions\OrmOperator $operator ) : string
+    // {
+        // switch( $operator )
+        // {
+            // case \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ
+            // case \damix\engines\orm\conditions\OrmOperator::ORM_OP_LIKE:
+            // case \damix\engines\orm\conditions\OrmOperator::ORM_OP_LIKE_BEGIN:
+            // case \damix\engines\orm\conditions\OrmOperator::ORM_OP_LIKE_END:
+                // return 'ilike';
+            // case \damix\engines\orm\conditions\OrmOperator::ORM_OP_NOTLIKE:
+                // return 'not ilike';
+            // default:
+					// return parent::getOperator($operator);
+        // }
+    // }
+	
+	// protected function getConditionLeft(array $condition) : string
+	// {
+		// switch( $condition['operator'] )
+		// {
+			// case \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ:
+			// case \damix\engines\orm\conditions\OrmOperator::ORM_OP_LIKE:
+				// $temp = $condition;
+				// $condition = array();
+				// $condition['type'] =  \damix\engines\orm\request\OrmPropertyType::ORM_TYPE_FIELD;
+				// $condition['leftdatatype'] = \damix\engines\orm\request\OrmPropertyType::ORM_TYPE_FORMULA;
+				
+				// $params = array('type' => 'property');
+				// $params[ 'ref' ] = $temp['leftdatatype'];
+				// $params[ 'table' ] = $temp['left']['table'] ?? '';
+				// $params[ 'property' ] = $temp['left']['field'] ?? $temp['left'];
+				
+				// $formula = new \damix\engines\orm\request\structure\OrmFormula();
+				// $formula->setName('upper');
+				// $formula->addParameterArray( array( $params ) );
+				// $condition['left'] = $formula;
+				// $condition['operator'] = $temp['operator'];
+				
+				// break;
+		// }
+		
+		// \damix\engines\logs\log::dump( $condition );
+		
+		// return parent::getConditionLeft( $condition );
+	// }
 }

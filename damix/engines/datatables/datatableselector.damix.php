@@ -37,7 +37,7 @@ class DatatableSelector
 			$this->core = true;
 			$this->_folder = \damix\application::getPathCore() . '..' . DIRECTORY_SEPARATOR . 'modules';
 		}
-        $this->_dircompletion = \damix\application::getPathApp() . '..' . DIRECTORY_SEPARATOR . 'completion' . DIRECTORY_SEPARATOR . $this->_directoryname . DIRECTORY_SEPARATOR;
+        $this->_dircompletion = \damix\application::getPathApp() . DIRECTORY_SEPARATOR . 'completion' . DIRECTORY_SEPARATOR . $this->_directoryname . DIRECTORY_SEPARATOR;
 		$this->classnamebase = 'datatable' . $selector;
 
     }

@@ -11,16 +11,16 @@ namespace damix\engines\orm\request\structure;
 
 class OrmStructure
 {
-	public function execute(\damix\engines\orm\request\OrmRequest $request) : ?\damix\engines\databases\DbResultSet
+	public function execute(\damix\engines\orm\request\OrmRequest $request, string $profile = '') : ?\damix\engines\databases\DbResultSet
     {
-        $driver = \damix\engines\orm\drivers\OrmDrivers::getDriver();
+        $driver = \damix\engines\orm\drivers\OrmDrivers::getDriver($profile);
 
         return $driver->execute( $request );
     }
 	
-	public function executeNonQuery(\damix\engines\orm\request\OrmRequest $request) : int|string
+	public function executeNonQuery(\damix\engines\orm\request\OrmRequest $request, string $profile = '') : int|string
     {
-        $driver = \damix\engines\orm\drivers\OrmDrivers::getDriver();
+        $driver = \damix\engines\orm\drivers\OrmDrivers::getDriver($profile);
 
         return $driver->executeNonQuery( $request );
     }
@@ -40,9 +40,9 @@ class OrmStructure
 		return $driver->execute( $request );
     }
 	
-	public function SchemaTable(\damix\engines\orm\request\structure\OrmTable $table) : ?\damix\engines\databases\DbResultSet
+	public function SchemaTable(\damix\engines\orm\request\structure\OrmTable $table, string $profile = '') : ?\damix\engines\databases\DbResultSet
     {
-        $driver = \damix\engines\orm\drivers\OrmDrivers::getDriver();
+        $driver = \damix\engines\orm\drivers\OrmDrivers::getDriver($profile);
 		$request = $driver->SchemaTable($table);
 		
 		return $driver->execute( $request );
@@ -96,9 +96,9 @@ class OrmStructure
 		return $driver->execute( $request );
     }
 	
-	public function SchemaColonne(\damix\engines\orm\request\structure\OrmTable $table) : ?\damix\engines\databases\DbResultSet
+	public function SchemaColonne(\damix\engines\orm\request\structure\OrmTable $table, string $profile = '') : ?\damix\engines\databases\DbResultSet
     {
-        $driver = \damix\engines\orm\drivers\OrmDrivers::getDriver();
+        $driver = \damix\engines\orm\drivers\OrmDrivers::getDriver($profile);
 		$request = $driver->SchemaColonne($table);
 		
 		return $driver->execute( $request );

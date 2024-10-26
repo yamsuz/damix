@@ -208,9 +208,8 @@ class xDate
     
     private function IsDBDate( string $date, string &$db_format = null ) : bool
     {
-        // $p = \jProfiles::get( 'jdb' );
-        $p = array( 'driver' => 'mariadb' );
-        $driver = $p[ 'driver' ];
+        // $p = array( 'driver' => 'mariadb' );
+        $driver = \damix\engines\databases\Db::getDriverName( '' );
 
         if( empty( $date ) )
         {

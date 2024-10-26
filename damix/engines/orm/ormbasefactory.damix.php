@@ -334,6 +334,10 @@ abstract class OrmBaseFactory
 		$create->setTable( $table );
 		$create->setIgnore( $ignore );
 		$create->executeNonQuery();
+		foreach( $this->getEvents('create', 'after') as $events )
+		{
+			\damix\engines\events\Event::notify( $events['name'], array( 'factory' => $this ));
+		}
 		return true;
 	}
 	
@@ -515,10 +519,10 @@ abstract class OrmBaseFactory
 			$fieldreference->setName( $prop[ 'realname' ]);
 			$contraint->setReference( $fieldreference );
 			
-			
 			$contraint->setDelete( \damix\engines\orm\request\structure\OrmContraintType::cast( $foreignkey['delete'] ?? '' ) );
 			$contraint->setUpdate( \damix\engines\orm\request\structure\OrmContraintType::cast( $foreignkey['update'] ?? '' ) );
 			$alter->ContraintAdd( $contraint );
+		
 		}
 		$alter->executeNonQuery();
 		

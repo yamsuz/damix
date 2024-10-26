@@ -80,6 +80,6 @@ class gabaritelementmenu
         $node->removeAttributes( 'iconfont' );
         $node->removeAttributes( 'href' );
        
-        return parent::read( $driver, $node );
+        parent::read( $driver, $node );
     }
 }

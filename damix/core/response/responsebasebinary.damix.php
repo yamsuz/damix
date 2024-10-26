@@ -16,6 +16,7 @@ class ResponseBaseBinary
 	public bool $doDownload = false;
 	public string $outputFileName;
 	public string $fileName;
+	public string $content;
 	
 	public function __construct()
     {
@@ -40,11 +41,10 @@ class ResponseBaseBinary
 		else
 			$this->addHttpHeader('Content-Disposition','inline; filename="'.str_replace('"','\"',$this->outputFileName).'"',false);
 		
-		
 		$this->sendHttpHeaders();
 		
 		session_write_close();
-		readfile($this->fileName);
+		echo($this->content);
 		flush();
 	}
 	
@@ -59,12 +59,11 @@ class ResponseBaseBinary
 			}
 			$this->mimeType = $mime;
 		}
-		
 	}
 	
 	private function setFilesize() : void
 	{
-		$this->addHttpHeader('Content-Length', strval(filesize($this->fileName) ));
+		$this->addHttpHeader('Content-Length', strval(strlen($this->content) ));
 	}
 	
 	protected function downloadHeader() : void

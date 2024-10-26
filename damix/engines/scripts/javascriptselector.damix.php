@@ -45,8 +45,13 @@ class JavascriptSelector
     {
         $dirwww = \damix\core\urls\Url::getBasePath();
         $dir = implode( '/', $this->_part );
-        
-        return $dirwww . 'js/' . $dir . $this->_extensiontemp;
+        $unique = '';
+		$filename = $this->getTempPath();
+		if( file_exists( $filename ) )
+		{
+			$unique = filemtime( $filename );
+		}
+        return $dirwww . 'js/' . $dir . $this->_extensiontemp . '?' . $unique;
     }
 
 }

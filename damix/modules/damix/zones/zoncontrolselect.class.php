@@ -29,8 +29,8 @@ class zoncontrolselectZone
 		{
 			if( $struct = \damix\engines\orm\Orm::getDefine( $ref ))
 			{
-				$orm = $struct['orm'];
-				$table = $struct['orm']->name;
+				// $orm = $struct['orm'];
+				// $table = $struct['orm']->name;
 				$field = $struct['field'];
 
 				if( $field )
@@ -76,7 +76,12 @@ class zoncontrolselectZone
 		{
 			$params['class'] = '';
 		}
-		$params['class'] .= ' m-select2 select2_simple';
+		$params['class'] .= ' xform_popup m-select2 select2_simple ';
+		if( $combo->getRemoteData() )
+		{
+			$params['damix-select'] = $selector;
+			$params['class'] .= ' select2-remote';
+		}
 		
 		$this->Tpl->assignParameter( 'operator', $operator );
 		$this->Tpl->assignParameter( 'value1', $value1 );

@@ -42,6 +42,9 @@
         }
         return this.textContent;
     }
+	if( this.hasClass( 'select2_simple' ) ){
+		return $(this).val();
+	}
     return '';
 };
 

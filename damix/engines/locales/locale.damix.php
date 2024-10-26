@@ -15,7 +15,7 @@ class Locale
     
     public static function get( string $selector, array $params = array() ) : ?string
     {
-		$langue = \damix\engines\settings\Setting::getValue('default', 'general', 'langue');
+		// $langue = \damix\engines\settings\Setting::getValue('default', 'general', 'langue');
 		
         $sel = new LocaleSelector( $selector );
 		$uniq = $sel->getUniqueSelector();

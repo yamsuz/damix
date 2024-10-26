@@ -10,5 +10,7 @@ namespace damix\engines\compiler;
 
 class PluginFunctionDriver
 {
-    
+    public CompilerDriver $parentDriver;
+	
+	public function execute( string $src ) : string {}
 }

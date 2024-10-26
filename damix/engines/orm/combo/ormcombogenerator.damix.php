@@ -144,33 +144,37 @@ class OrmComboGenerator
         $liste = $dom->xPath( '/combos/combo[@name="'. $selector->getPart( 'resource' ) .'"]' );
         
         $tablecontent = array();
-        $optioncontent = array();
+        
         
         if( $liste->length > 0)
         {
             if( $combo = $liste->item( 0 ) )
             {
+				$params = array();
 				if( preg_match('/~/', $combo->getAttribute( 'orm' ) ))
 				{
-					$ormselector = $combo->getAttribute( 'orm' );
+					$params['ormselector'] = $combo->getAttribute( 'orm' );
 				}
 				else
 				{
 					$define = \damix\engines\orm\defines\OrmDefines::get();
-					$ormselector = $define->get( $combo->getAttribute( 'orm' ) );
+					$params['ormselector'] = $define->get( $combo->getAttribute( 'orm' ) );
 				}
                 
-                $structure = \damix\engines\orm\Orm::getStructure( $ormselector );
+                $structure = \damix\engines\orm\Orm::getStructure( $params['ormselector'] );
                 
-                $value = $combo->getAttribute( 'value' );
-                $color = $combo->getAttribute( 'color' );
-                $firstempty = $combo->getAttribute( 'firstempty' );
-                $rowcount = intval( $selector-> _parameters[ 'limit' ]['rowcount'] ?? $combo->getAttribute( 'rowcount' ));
-                $offset = intval( $selector-> _parameters[ 'limit' ]['offset'] ??  $combo->getAttribute( 'offset' ) );
-                $function = $combo->getAttribute( 'function' );
-                $parent = $combo->getAttribute( 'parent' );
+				
+				
+				$params['value'] = $combo->getAttribute( 'value' );
+                $params['color'] = $combo->getAttribute( 'color' );
+                $params['firstempty'] = $combo->getAttribute( 'firstempty' );
+                $params['remotedata'] = tobool($combo->getAttribute( 'remotedata' ));
+                $params['rowcount'] = intval( $selector-> _parameters[ 'limit' ]['rowcount'] ?? $combo->getAttribute( 'rowcount' ));
+                $params['offset'] = intval( $selector-> _parameters[ 'limit' ]['offset'] ??  $combo->getAttribute( 'offset' ) );
+                $params['function'] = $combo->getAttribute( 'function' );
+                $params['parent'] = $combo->getAttribute( 'parent' );
                 
-                $data = $structure->getProperty( $value );
+                $data = $structure->getProperty( $params['value'] );
                 
 				$tablecontent = array();
                 if( isset( $data['locale'] ) )
@@ -181,139 +185,39 @@ class OrmComboGenerator
                 {
 					$tablecontent[] = '$this->_title = ' . $this->quote('') . ';';
                 }
-                $tablecontent[] = '$this->_color = ' . $this->quote($color) . ';';
-                $tablecontent[] = '$this->_orm = ' . $this->quote($ormselector) . ';';
-                $tablecontent[] = '$this->_value = ' . $this->quote($value) . ';';
-                $tablecontent[] = '$this->_function = ' . $this->quote($function) . ';';
-                $tablecontent[] = '$this->_parent = ' . $this->quote($parent) . ';';
-                $tablecontent[] = '$this->_firstempty = ' . (tobool( $firstempty ) ? 'true' : 'false') . ';';
-                $tablecontent[] = '$this->_rowcount = ' . $rowcount . ';';
-                $tablecontent[] = '$this->_offset = ' . $offset . ';';
+                $tablecontent[] = '$this->_color = ' . $this->quote($params['color']) . ';';
+                $tablecontent[] = '$this->_orm = ' . $this->quote($params['ormselector']) . ';';
+                $tablecontent[] = '$this->_value = ' . $this->quote($params['value']) . ';';
+                $tablecontent[] = '$this->_function = ' . $this->quote($params['function']) . ';';
+                $tablecontent[] = '$this->_parent = ' . $this->quote($params['parent']) . ';';
+                $tablecontent[] = '$this->_remotedata = ' . ($params['remotedata'] ? 'true' : 'false') . ';';
+                $tablecontent[] = '$this->_firstempty = ' . (tobool( $params['firstempty'] ) ? 'true' : 'false') . ';';
+                $tablecontent[] = '$this->_rowcount = ' . $params['rowcount'] . ';';
+                $tablecontent[] = '$this->_offset = ' . $params['offset'] . ';';
 
                 
 				$this->appendFunction( 'propertyinit', array(), $tablecontent, 'protected', 'void');
         
-				
-                
-                $obj = \damix\engines\orm\Orm::get( $ormselector );
-                $o = $obj->getOrdersClear( $function );
-                $c = $obj->getConditionsClear( $function );
-                $l = $obj->getLimits( $function );
-                
-                if( $rowcount > 0 )
-                {
-                    $l->RowCount = $rowcount;
-                    $l->Offset = $offset;
-                }
-                
-				$listefilters = $dom->xPath( 'filters/filter', $combo );
-				foreach( $listefilters as $filter)
+				$listeorder = $dom->xPath( 'orders/order', $combo );
+		
+				foreach( $listeorder as $order )
 				{
-					switch( $filter->getAttribute( 'type' ) )
-					{
-						case 'string':
-							$c->addFieldString( $filter->getAttribute( 'property' ), $filter->getAttribute( 'operator' ), $filter->getAttribute( 'value' ), 'combo' );
-							break;
-					}
+					$optioncontent = '$this->_property[\'orders\'][] = array(\'property\' => \''. $order->getAttribute( 'property' ) .'\', \'way\' => \''. $order->getAttribute( 'way' ) .'\' );';
+					$this->appendFunction( 'propertyinit', array(), array( $optioncontent ), 'protected');
 				}
-                
-                $listedisplay = $dom->xPath( 'options/display', $combo );
-                $listeorder = $dom->xPath( 'orders/order', $combo );
 				
-                foreach( $listeorder as $order )
-                {
-					$ormorder = new \damix\engines\orm\request\structure\OrmOrder();
-
-					$ormorder->setColumn( $order->getAttribute( 'property' ) );
-					$ormorder->setWay(\damix\engines\orm\request\structure\OrmOrderWay::cast($order->getAttribute( 'way' )) );
+				$listedisplay = $dom->xPath( 'options/display', $combo );
+				foreach( $listedisplay as $dis )
+				{
+					$optioncontent =  '$this->_property[\'option\'][] = array(\'type\' => \''. $dis->getAttribute( 'type' ) .'\', \'value\' => \''. $dis->getAttribute( 'name' ) .'\' );';
 					
-                    $o->add( $ormorder );
-                    
-                    $optioncontent[] = '$this->_property[\'orders\'][] = array(\'property\' => \''. $order->getAttribute( 'property' ) .'\', \'way\' => \''. $order->getAttribute( 'way' ) .'\' );';
-                }
-                // \damix\engines\logs\log::dump( $obj );
-                $listedata = $obj->$function();
-                $html = '';
-                if( $firstempty )
-                {
-                    $html .= '<option></option>';
-                }
-                if( isset( $this->parameters['null'] ) && $this->parameters['null'] )
-                {
-                    $html .= '<option value="#null#">'. \damix\engines\locales\Locale::get( 'damix~lclcore.filter.combo.null' ) .'</option>';
-                }
-                $htmlgroupe = array();
-                $htmlparent = array();
-                foreach( $listedata as $info )
-                {
-                    $display = '';
-                    foreach( $listedisplay as $dis )
-                    {
-                        switch( $dis->getAttribute( 'type' ) )
-                        {
-                            case 'property':
-                                $display .= $info->{$dis->getAttribute( 'name' )};
-                                break;
-                            case 'string':
-                                $display .= $dis->getAttribute( 'name' );
-                                break;
-                        }
-                    }
-					
-					$this->appendFunction( 'propertyinit', array(), $optioncontent, 'protected');
-					$optioncontent = array();
-                    $optioncontent[] = '$this->_data[] = array(\'value\' => \''. $info->$value .'\', \'display\' => \''. preg_replace( '/\'/', '\\\'', $display ) .'\', \'idparent\' => \''. ($parent != '' ? $info->$parent : '' ) .'\' );';
-                    
-                    if( $parent == '' || $info->$parent == '' )
-                    {
-                        $htmlparent[ $info->$value ] = array( 'value' => $info->$value,
-                                    'label' => preg_replace( '/\'/', '\\\'', $display ),
-                                    'parent' => ($parent != '' ? $info->$parent : '' ),
-                                    );
-                    }
-                    else
-                    {
-                        $htmlgroupe[ $info->$parent ][] = array( 'value' => $info->$value,
-                                    'label' => preg_replace( '/\'/', '\\\'', $display ),
-                                    'parent' => $info->$parent,
-                                    );
-                    }
-                }
-
-				$default = $this->parameters['default'] ?? null;
-                foreach( $htmlparent as $elt )
-                {
-                    
-                    if( isset( $htmlgroupe[ $elt['value'] ] ) )
-                    {
-                        $html .= '<optgroup label="' . $elt['label'] . '">';
-                        foreach( $htmlgroupe[ $elt['value'] ] as $data )
-                        {
-                            $html .= '<option value="'. $data[ 'value' ] .'">'. $data[ 'label' ] .'</option>';
-                        }
-                        $html .= '</optgroup>';
-                    }
-                    else
-                    {
-                        $html .= '<option value="'. $elt[ 'value' ] .'"'. ($default && $elt[ 'value' ] == $default ? ' selected="selected"' : '').'>'. $elt[ 'label' ] .'</option>';
-                    }
-                }
-                
-                
-                $this->appendFunction( 'propertyinit', array(), $optioncontent, 'protected');
-                $optioncontent = array(
-								'$this->_html = \''. $html .'\';'
-								);
-                
-                $this->appendFunction( 'propertyinit', array(), $optioncontent, 'protected');
-				 
-                foreach( $listedisplay as $dis )
-                {
-                    $optioncontent = array( 
-								'$this->_property[\'option\'][] = array(\'type\' => \''. $dis->getAttribute( 'type' ) .'\', \'value\' => \''. $dis->getAttribute( 'name' ) .'\' );'
-								);
-					$this->appendFunction( 'propertyinit', array(), $optioncontent, 'protected');
-                }
+					$this->appendFunction( 'propertyinit', array(), array( $optioncontent ), 'protected');
+				}
+				
+                if( ! $params['remotedata'] )
+				{
+					$this->loadhtml( $combo, $params );
+				}
             }
         }
         
@@ -321,6 +225,153 @@ class OrmComboGenerator
     }
     
     
+	private function loadhtml( \DomNode $combo, array $params ) : void
+	{
+		$dom = $this->_document;
+		$optioncontent = array();
+		$obj = \damix\engines\orm\Orm::get( $params['ormselector'] );
+		$o = $obj->getOrdersClear( $params['function'] );
+		$c = $obj->getConditionsClear( $params['function'] );
+		$l = $obj->getLimits( $params['function'] );
+		
+		if( $params['rowcount'] > 0 )
+		{
+			$l->RowCount = $params['rowcount'];
+			$l->Offset = $params['offset'];
+		}
+		
+		$listefilters = $dom->xPath( 'filters/filter', $combo );
+		foreach( $listefilters as $filter)
+		{
+			switch( $filter->getAttribute( 'type' ) )
+			{
+				case 'string':
+					$c->addFieldString( $filter->getAttribute( 'property' ), $filter->getAttribute( 'operator' ), $filter->getAttribute( 'value' ), 'combo' );
+					break;
+			}
+		}
+		
+		$listedisplay = $dom->xPath( 'options/display', $combo );
+		$listeorder = $dom->xPath( 'orders/order', $combo );
+		
+		foreach( $listeorder as $order )
+		{
+			$ormorder = new \damix\engines\orm\request\structure\OrmOrder();
+
+			$ormorder->setColumn( $order->getAttribute( 'property' ) );
+			$ormorder->setWay(\damix\engines\orm\request\structure\OrmOrderWay::cast($order->getAttribute( 'way' )) );
+			
+			$o->add( $ormorder );
+		}
+		
+		$listedata = $obj->{$params['function']}();
+		$html = '';
+		if( $params['firstempty'] && !(isset( $this->parameters['null'] ) && $this->parameters['null']) )
+		{
+			$html .= '<option></option>';
+		}
+		elseif( isset( $this->parameters['null'] ) && $this->parameters['null'] )
+		{
+			$html .= '<option value="#null#">'. \damix\engines\locales\Locale::get( 'damix~lclcore.filter.combo.null' ) .'</option>';
+		}
+		$htmlgroupe = array();
+		$htmlparent = array();
+		$params['value'] = $this->getProperty( $params['value'] );
+		foreach( $listedata as $info )
+		{
+			$display = '';
+			foreach( $listedisplay as $dis )
+			{
+				switch( $dis->getAttribute( 'type' ) )
+				{
+					case 'property':
+						$display .= $info->{$dis->getAttribute( 'name' )};
+						break;
+					case 'reference':
+						if( $struct = \damix\engines\orm\Orm::getDefine( $dis->getAttribute( 'name' )))
+						{
+							$field = $struct['field'];
+
+							if( $field )
+							{
+								$params['display'] = $struct['orm']->realname . '_' . $field['realname'];
+								$display .= $info->{$params['display']};
+							}
+						}
+					
+						break;
+					case 'string':
+						$display .= $dis->getAttribute( 'name' );
+						break;
+				}
+			}
+			
+			
+			$optioncontent = array();
+			$optioncontent[] = '$this->_data[] = array(\'value\' => \''. $info->{$params['value']} .'\', \'display\' => \''. preg_replace( '/\'/', '\\\'', $display ) .'\', \'idparent\' => \''. ($params['parent'] != '' ? $info->{$params['parent']} : '' ) .'\' );';
+			
+			if( $params['parent'] == '' || $info->{$params['parent']} == '' )
+			{
+				$htmlparent[ $info->{$params['value']} ] = array( 'value' => $info->{$params['value']},
+							'label' => preg_replace( '/\'/', '\\\'', $display ),
+							'parent' => ($params['parent'] != '' ? $info->$parent : '' ),
+							);
+			}
+			else
+			{
+				$htmlgroupe[ $info->$parent ][] = array( 'value' => $info->$value,
+							'label' => preg_replace( '/\'/', '\\\'', $display ),
+							'parent' => $info->$parent,
+							);
+			}
+		}
+
+		$default = $this->parameters['default'] ?? null;
+		foreach( $htmlparent as $elt )
+		{
+			
+			if( isset( $htmlgroupe[ $elt['value'] ] ) )
+			{
+				$html .= '<optgroup label="' . $elt['label'] . '">';
+				foreach( $htmlgroupe[ $elt['value'] ] as $data )
+				{
+					$html .= '<option value="'. $data[ 'value' ] .'">'. $data[ 'label' ] .'</option>';
+				}
+				$html .= '</optgroup>';
+			}
+			else
+			{
+				$html .= '<option value="'. $elt[ 'value' ] .'"'. ($default && $elt[ 'value' ] == $default ? ' selected="selected"' : '').'>'. $elt[ 'label' ] .'</option>';
+			}
+		}
+		
+		
+		$this->appendFunction( 'propertyinit', array(), $optioncontent, 'protected');
+		$optioncontent = array(
+						'$this->_html = \''. $html .'\';'
+						);
+		
+		$this->appendFunction( 'propertyinit', array(), $optioncontent, 'protected');
+		 
+		
+
+	}
+	
+	public function getProperty(string $value): string
+	{
+		if( $struct = \damix\engines\orm\Orm::getDefine( $value ))
+		{
+			$field = $struct['field'];
+
+			if( $field )
+			{
+				return $struct['orm']->realname . '_' . $field['realname'];
+			}
+		}
+		return $value;
+	}
+	
+	
     private function writefile( $selector )
     {
         $this->writeLine( 'class ' . $selector->getClassName() );

@@ -49,7 +49,7 @@ class DbAcl
 		}
 		
 		$c = $this->sormaclsright->getConditionsClear('loadrightsubject');
-		$c->addString( array( 'table' => 'aclrights', 'field' => 'groupcode' ), \damix\engines\orm\conditions\OrmOperator::ORM_OP_IN, self::$_groups);
+		$c->addString( '{ORM_RIGHTS}:groupcode', \damix\engines\orm\conditions\OrmOperator::ORM_OP_IN, self::$_groups);
 		$subjects = $this->sormaclsright->loadrightsubject();
 		
 		self::$_acl = array();
@@ -68,7 +68,7 @@ class DbAcl
 		}
 		
 		$c = $this->ormusersgroups->getConditionsClear('select');
-		$c->addString( array( 'table' => 'aclusersgroups', 'field' => 'login' ), \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, \damix\engines\tools\xTools::login() );
+		$c->addString( '{ORM_USERS_GROUPS}:login', \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, \damix\engines\tools\xTools::login() );
 		$groups = $this->ormusersgroups->select();
 		self::$_groups = array();
 		foreach( $groups as $group )
@@ -80,7 +80,7 @@ class DbAcl
 	public function addsubject(string $subject, string $label = '') : void
 	{
 		$c = $this->ormsubjects->getConditionsClear('select');
-		$c->addString( 'subject', \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, $subject );
+		$c->addString( '{ORM_SUBJECTS}:subject', \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, $subject );
 		$liste = $this->ormsubjects->select();
 		
 		if( $liste->rowcount() == 0 )
@@ -95,8 +95,8 @@ class DbAcl
 	public function addright(string $subject, string $group, bool $cancel = false) : void
 	{
 		$c = $this->ormrights->getConditionsClear('select');
-		$c->addString( 'subject', \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, $subject );
-		$c->addString( 'groupcode', \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, $group );
+		$c->addString( '{ORM_RIGHTS}:subject', \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, $subject );
+		$c->addString( '{ORM_RIGHTS}:groupcode', \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, $group );
 		$liste = $this->ormrights->select();
 		
 		if( $liste->rowcount() == 0 )
@@ -112,7 +112,7 @@ class DbAcl
 	public function addgroup(string $code, string $label) : void
 	{
 		$c = $this->ormgroups->getConditionsClear('select');
-		$c->addString( 'code', \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, $code );
+		$c->addString( '{ORM_GROUPS}:code', \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, $code );
 		$liste = $this->ormgroups->select();
 		
 		if( $liste->rowcount() == 0 )
@@ -127,7 +127,7 @@ class DbAcl
 	public function addusergroup(string $login, string $group) : void
 	{
 		$c = $this->ormusersgroups->getConditionsClear('select');
-		$c->addString( 'login', \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, $login );
+		$c->addString( '{ORM_USERS_GROUPS}:codelogin', \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, $login );
 		$liste = $this->ormusersgroups->select();
 		
 		if( $liste->rowcount() == 0 )

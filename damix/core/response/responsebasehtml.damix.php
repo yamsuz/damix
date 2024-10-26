@@ -86,6 +86,11 @@ class ResponseBaseHtml
 		print $content;
 	}
 	
+	public function setBodyAttributes(array $attributes) : void
+	{
+		$this->bodyAttributes = array_merge($this->bodyAttributes, $attributes);
+	}
+	
 	public function setBodyAttribute(string $name, string $value) : void
 	{
 		$this->bodyAttributes[ $name ] = $value;

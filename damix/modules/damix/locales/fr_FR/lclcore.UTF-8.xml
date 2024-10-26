@@ -5,24 +5,62 @@
 		<locale name="core.period.au">au</locale>
 		<locale name="core.bool.oui">oui</locale>
 		<locale name="core.bool.non">non</locale>
+		<locale name="core.menu.filter.export">Export</locale>
+		<locale name="core.menu.datatable.configuration">Réglages</locale>
+		<locale name="datatable.header.propriete">Propriété</locale>
+		<locale name="datatable.header.entete">Entête</locale>
+		<locale name="datatable.header.locale">Locale</locale>
+		<locale name="datatable.header.typedonnee">Type</locale>
+		<locale name="datatable.header.ordre">Ordre</locale>
+		<locale name="datatable.header.trie">Trie</locale>
+		<locale name="datatable.header.colonne">Colonne</locale>
+		<locale name="datatable.header.ligne">Ligne</locale>
+		<locale name="datatable.header.datatype">Type</locale>
+		<locale name="datatable.header.formule">Formule</locale>
+		<locale name="datatable.datatype.string">Texte</locale>
+		<locale name="datatable.datatype.phone">Téléphone</locale>
+		<locale name="datatable.datatype.int">Entier</locale>
+		<locale name="datatable.datatype.decimal">Décimal</locale>
+		<locale name="datatable.datatype.date">Date</locale>
+		<locale name="datatable.datatype.datetime">Date Heure</locale>
+		<locale name="datatable.datatype.time">Heure</locale>
+		<locale name="datatable.datatype.bool">Booléen</locale>
+		<locale name="datatable.datatype.color">Couleur</locale>
+		<locale name="datatable.datatype.percent">Pourcentage</locale>
+		<locale name="datatable.order.asc">Croissant</locale>
+		<locale name="datatable.order.desc">Décroissant</locale>
+		<locale name="filter.operator.eq">Egal</locale>
+		<locale name="filter.operator.noteq">Différent</locale>
+		<locale name="filter.operator.lteq">Inférieur ou égal</locale>
+		<locale name="filter.operator.lt">Inférieur</locale>
+		<locale name="filter.operator.gt">Supérieur</locale>
+		<locale name="filter.operator.gteq">Supérieur ou égal</locale>
+		<locale name="filter.operator.like">Contient</locale>
+		<locale name="filter.operator.begin">Commence par</locale>
+		<locale name="filter.operator.end">Se finit par</locale>
+		<locale name="filter.operator.period">Période</locale>
+		<locale name="filter.combo.null">Valeur vide</locale>
 	</section>
 	<section name="filter">
 		<locale name="filter.combo.null">Vide</locale>
-	</section>
-	<section name="select2">
-		<locale name="select2.aucunresultat">Aucun résultat</locale>
-		<locale name="select2.rechercheencours">Recherche en cours ...</locale>
-		<locale name="select2.nombreselectionmax">Vous avez atteint le nombre maximum de sélection.</locale>
 	</section>
 	<section name="datatable">
 		<locale name="datatable.aucunresultat">Aucun résultat trouvé.</locale>
 		<locale name="datatable.chargementencours">Chargement en cours ...</locale>
 		<locale name="datatable.totallignes">Total : _TOTAL_ résultat(s)</locale>
+		<locale name="datatable.lengthMenu">Nombre d'entrée _MENU_</locale>
+		<locale name="datatable.next">Suivant</locale>
+		<locale name="datatable.first">Premier</locale>
+		<locale name="datatable.last">Dernier</locale>
+		<locale name="datatable.previous">Précédent</locale>
 	</section>
-	<section name="form">
+	<section name="select2">
+		<locale name="select2.noresults">Aucun résultat</locale>
 		<locale name="form.label.required"> (*)</locale>
-		<locale name="select2.rechercheencours">Recherche en cours ...</locale>
-		<locale name="select2.nombreselectionmax">Vous avez atteint le nombre maximum de sélection.</locale>
+		<locale name="select2.searching">Recherche en cours ...</locale>
+		<locale name="select2.maximumSelected">Vous avez atteint le nombre maximum de sélection.</locale>
+		<locale name="select2.loadingMore">Chargement en cours ...</locale>
+		<locale name="select2.inputTooShort">Veuillez saisir votre recherche.</locale>
+		<locale name="select2.language">fr</locale>
 	</section>
-
 </locales>

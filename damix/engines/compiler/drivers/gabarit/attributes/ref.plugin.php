@@ -29,7 +29,7 @@ class GabaritAttributeRef
 
 
         $ref = \damix\engines\orm\Orm::getDefine( $attribute->value );
-        
+        $content = array();
         if( $ref !== null )
         {
 			if( $node->hasAttribute( 'name' ) )

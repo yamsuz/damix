@@ -16,11 +16,13 @@ class DatatableCompiler
         
         $compile = false;
         $temp = $selector->getTempPath();
-        
+
         if( file_exists( $temp ) )
         {
             $compiledate = filemtime( $temp );
-            foreach( $selector->files as $files )
+			
+			$filesconf = array_merge( $selector->files, $selector->completion );
+            foreach( $filesconf as $files )
             {
                 if( filemtime( $files[ 'filename' ] ) > $compiledate )
                 {
@@ -32,7 +34,7 @@ class DatatableCompiler
         {
             $compile = true;
         }
-		        
+
         if( $compile )
         {
             $datatablegenerator = new \damix\engines\datatables\DatatableGenerator();

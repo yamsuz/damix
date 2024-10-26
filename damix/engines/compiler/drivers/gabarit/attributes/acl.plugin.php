@@ -19,7 +19,7 @@ class gabaritattributeacl
         
         if( $acl != '' )
         {
-            return \jAcl2::check( $acl );
+            return \damix\engines\acls\Acl::check( $acl );
         }
 
         return true;

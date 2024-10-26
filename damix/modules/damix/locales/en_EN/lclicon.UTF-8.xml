@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locales version="1.0">
+	<section name="icon">
+		<locale name="icon.actualiser.label">Refresh</locale>
+		<locale name="icon.actualiser.title">Refresh</locale>
+		<locale name="icon.ajouter.label">Add</locale>
+		<locale name="icon.ajouter.title">Add</locale>
+		<locale name="icon.changer.label">To change</locale>
+		<locale name="icon.changer.title">To change</locale>
+		<locale name="icon.configuration.label">Configure</locale>
+		<locale name="icon.configuration.title">Configure</locale>
+		<locale name="icon.enregistrer.label">Save</locale>
+		<locale name="icon.enregistrer.title">Save</locale>
+		<locale name="icon.exporter.label">Export</locale>
+		<locale name="icon.exporter.title">Export</locale>
+		<locale name="icon.modifier.label">Edit</locale>
+		<locale name="icon.modifier.title">Edit</locale>
+		<locale name="icon.password.label">Password</locale>
+		<locale name="icon.password.title">Password</locale>
+		<locale name="icon.recherche-filtre.label">Search</locale>
+		<locale name="icon.recherche-filtre.title">Search</locale>
+		<locale name="icon.recherche.label">Search</locale>
+		<locale name="icon.recherche.title">Search</locale>
+		<locale name="icon.supprimer.label">Delete</locale>
+		<locale name="icon.supprimer.title">Delete</locale>
+		<locale name="icon.valider.label">Validate</locale>
+		<locale name="icon.valider.title">Validate</locale>
+	</section>
+	<section name="popup">
+		<locale name="popup.error.title">Errors</locale>
+	</section>
+	<section name="button">
+		<locale name="button.valider.label">Validate</locale>
+		<locale name="button.valider.title">Validate</locale>
+		<locale name="button.annuler.label">Cancel</locale>
+		<locale name="button.annuler.title">Cancel</locale>
+		<locale name="button.ok.label">Ok</locale>
+		<locale name="button.ok.title">Ok</locale>
+	</section>
+</locales>

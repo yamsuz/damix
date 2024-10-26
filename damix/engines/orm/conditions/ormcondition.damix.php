@@ -39,6 +39,7 @@ class OrmCondition
 	
 	public function getDataValue( int $number ) : string
     {
+		// \damix\engines\logs\log::dump( $this->_data );
         $condition = $this->_data[ $number ];
         if( is_array( $condition['right'] ) && $condition['operator'] == \damix\engines\orm\conditions\OrmOperator::ORM_OP_IN )
 		{
@@ -47,16 +48,60 @@ class OrmCondition
 			
 			foreach( $condition['right'] as $right )
 			{
-				$out[] = $this->_driver->getValue( $right, $condition['rightdatatype'], $condition['operator'] );
+				$value = $this->_driver->getValue( $right, $condition['rightdatatype'], $condition['operator'] );
+				switch( $condition['rightdatatype'] )
+				{
+					case \damix\engines\orm\request\structure\OrmDataType::ORM_CHAR:
+					case \damix\engines\orm\request\structure\OrmDataType::ORM_VARCHAR:
+					case \damix\engines\orm\request\structure\OrmDataType::ORM_TEXT:
+					case \damix\engines\orm\request\structure\OrmDataType::ORM_LONGTEXT:
+						$value = $this->getValue( $value );
+						break;
+				}
+				$out[] = $value;
 			}
 			
 			return '(' . implode(', ', $out ) . ')';
 		}
 		else
 		{
-			return $this->_driver->getValue( $condition['right'], $condition['rightdatatype'], $condition['operator'] );
+			$value = $this->_driver->getValue( $condition['right'], $condition['rightdatatype'], $condition['operator'] );
+			switch( $condition['rightdatatype'] )
+			{
+				case \damix\engines\orm\request\structure\OrmDataType::ORM_CHAR:
+				case \damix\engines\orm\request\structure\OrmDataType::ORM_VARCHAR:
+				case \damix\engines\orm\request\structure\OrmDataType::ORM_TEXT:
+				case \damix\engines\orm\request\structure\OrmDataType::ORM_LONGTEXT:
+					$value = $this->getValue( $value );
+					break;
+			}
+			return $value;
 		}
     }
+	
+	private function getValue(mixed $value )
+	{
+		if( $this->_driver->isCaseManagement() )
+		{
+			$params = array( 'type'=> 'raw', 'value' => $value );
+			
+			$formula = new \damix\engines\orm\request\structure\OrmFormula();
+			$formula->setName('upper');
+			$formula->addParameterArray( array( $params ) );
+			
+			if( $formula )
+			{
+				$obj = \damix\engines\orm\drivers\OrmDriversBase::getDriverFunction( $this->_driver->_cnx->getDriver(), $formula->getName() );
+				if( $obj !== null )
+				{
+					$obj->driver = $this->_driver;
+					return $obj->execute( $formula );
+				}
+			}
+		}
+		
+		return $value;
+	}
 	
 	public function addGroupBegin( string $name = '' ) : void
     {
@@ -156,6 +201,11 @@ class OrmCondition
 			$this->addDate( $property, \damix\engines\orm\conditions\OrmOperator::ORM_OP_LT, $value2, $name );
 		}
         $this->addGroupEnd( $name );
+    }
+	
+	public function addFunction( mixed $property, ?\damix\engines\orm\conditions\OrmOperator $operator, string $value, string $name = '' ) : void
+    {
+		$this->addCondition($property, $operator, $value, $name, \damix\engines\orm\request\structure\OrmDataType::ORM_VARCHAR );
     }
 	
 	public function addCondition(mixed $property, ?\damix\engines\orm\conditions\OrmOperator $operator, mixed $value, string $name, \damix\engines\orm\request\structure\OrmDataType $rightdatatype ) : void

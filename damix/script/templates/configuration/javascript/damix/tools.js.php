@@ -50,7 +50,8 @@ function pageload( type )
 						searching: function(){
 							return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.rechercheencours' ); ?>';
 						}
-					}
+					},
+					width: 'style' 
 				});
 			});
             $( '.select2_multiple' ).each( function(){
@@ -69,15 +70,59 @@ function pageload( type )
 						maximumSelected: function(){
 							return "<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.nombreselectionmax' ); ?>";
 						}
-                    }
+                    },
+					width: 'style' 
                 });
             });
+			$('.select2-remote').each(function(){
+				$(this).select2({
+					ajax: {
+						url: '<?php echo \damix\core\urls\Url::getPath( 'damix~forms:selectdata' );?>',
+						dataType: 'json',
+						delay: 250,
+						type: "POST",
+						data: function (params) {
+							return {
+								selector: this.attr('damix-select'),
+								q: params.term, // search term
+								page: params.page
+							};
+						},
+						processResults: function (data, params) {
+							params.page = params.page || 1;
+
+							return {
+								results: data.items,
+								pagination: {
+									more: (params.page * 30) < data.total_count
+								}
+							};
+						},
+					},
+					placeholder: $( this ).attr( 'data-placeholder' ),
+					minimumInputLength: 1,
+					language: {
+						"noResults" : function(){
+							return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.noResults' ); ?>';
+						},
+						"loadingMore" : function(){
+							return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.loadingMore' ); ?>';
+						},
+						"inputTooShort" : function(e){
+							return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.inputTooShort' ); ?>';
+						},
+						searching: function() {
+							return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.searching' ); ?>';
+						},
+					},
+				});
+			});
 			break;
 		case 'popup':
 			$( '.xform_popup .select2_simple' ).each( function(){
 				$( this ).select2({
 					placeholder: $( this ).attr( 'data-placeholder' ),
-					allowClear: true,
+			
 					language:
 					{
 						noResults: function(){
@@ -87,7 +132,8 @@ function pageload( type )
 							return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.rechercheencours' ); ?>';
 						}
 					},
-					dropdownParent: $( '.ui-dialog' )
+					dropdownParent: $( '.ui-dialog' ),
+					width: 'style' 
 				});
 			});
             $( '.xform_popup .select2_multiple' ).each( function(){
@@ -107,13 +153,60 @@ function pageload( type )
 							return "<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.nombreselectionmax' ); ?>";
 						}
                     },
-                    dropdownParent: $( '.ui-dialog' )
+                    dropdownParent: $( '.ui-dialog' ),
+					width: 'style' 
                 });
             });
+			$('.select2-remote').each(function(){
+				$(this).select2({
+					ajax: {
+						url: '<?php echo \damix\core\urls\Url::getPath( 'damix~forms:selectdata' );?>',
+						dataType: 'json',
+						delay: 250,
+						type: "POST",
+						data: function (params) {
+							return {
+								selector: this.attr('damix-select'),
+								q: params.term, // search term
+								page: params.page
+							};
+						},
+						processResults: function (data, params) {
+							params.page = params.page || 1;
+
+							return {
+								results: data.items,
+								pagination: {
+									more: (params.page * 30) < data.total_count
+								}
+							};
+						},
+					},
+					dropdownParent: $( '.ui-dialog' ),
+					placeholder: $( this ).attr( 'data-placeholder' ),
+					minimumInputLength: 1,
+					language: {
+						"noResults" : function(){
+							return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.noResults' ); ?>';
+						},
+						"loadingMore" : function(){
+							return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.loadingMore' ); ?>';
+						},
+						"inputTooShort" : function(e){
+							return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.inputTooShort' ); ?>';
+						},
+						searching: function() {
+							return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.searching' ); ?>';
+						},
+					},
+				});
+			});
 			break;
 		default:
 			break;
 	}
+	
+	
 	
 	let o = $( '.datepicker' );
 	if( o && o.datepicker)
@@ -145,7 +238,48 @@ function pageload( type )
 	{
 		o.timepicker({});
 	}
+	
+	
+	
 }
+
+function alert_error( msg )
+{
+	let d, b = $( 'body' );
+	
+	d = document.getElementById('alert_error');
+	if( !d )
+	{
+		d = document.createElement( 'div' );
+		d.id = 'alert_error';
+		b.append( d );
+	}
+	
+	if( msg instanceof Array )
+	{
+		var m = '', i = 0;
+		for( i = 0; i < msg.length; i ++)
+		{
+			m += msg[i] + "<br>";
+		}
+		msg = m;
+	}
+	
+	d.innerHTML = msg;
+	
+	$( "#alert_error" ).dialog({
+		title: '<?php echo \damix\engines\locales\Locale::get( 'damix~lclicon.popup.error.title' ); ?>',
+		modal: true,
+		buttons: [{
+			text: '<?php echo \damix\engines\locales\Locale::get( 'damix~lclicon.button.ok.label' ); ?>',
+			title: '<?php echo \damix\engines\locales\Locale::get( 'damix~lclicon.button.ok.title' ); ?>',
+			icon: '',
+			class: 'btn btn-damix-vert1 damix-dt_btn-action',
+			click: function(){$( this ).dialog( "close" );}
+		}]
+    });
+}
+
 
 $( document ).ready( function(){   
     pageload( 'page' );

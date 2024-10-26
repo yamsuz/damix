@@ -29,6 +29,7 @@ class CompilerDriver
     {
         $this->_language = new \damix\engines\tools\Language();
         $this->content = new CompilerContentTemp();
+        $this->parentDriver = $this;
     }
     
     public function loaddefaultplugin()
@@ -264,7 +265,7 @@ class CompilerDriver
             if( ! $this->_func[ $name ][ 'load' ] )
             {
                 require_once( $this->_func[ $name ][ 'fullpath' ] );
-                $classname = '\compiler\\' . $this->_driver . 'function' . $name;
+                $classname = '\\damix\\engines\\compiler\\drivers\\'.$this->_driver.'\\functions\\' . $this->_driver . 'function' . $name;
                 $this->_func[ $name ][ 'load' ] = new $classname();
             }
             return $this->_func[ $name ][ 'load' ];

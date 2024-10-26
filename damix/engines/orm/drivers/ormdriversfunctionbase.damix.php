@@ -71,7 +71,7 @@ abstract class OrmDriversFunctionBase
 						switch( $info['type'] )
 						{
 							case 'property':
-								$formule .= (isset($info['table']) ? $info['table'] . '.' : '') . $info['property'] ;
+								$formule .= (isset($info['table']) && !empty($info['table']) ? $info['table'] . '.' : '') . $info['property'] ;
 								break;
 							case 'raw':
 								$formule .= $info['value'];

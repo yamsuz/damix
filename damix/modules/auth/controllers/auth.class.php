@@ -20,9 +20,11 @@ class auth
 	public function index()
 	{
 		$rep = $this->getResponse('htmlauth');
+		$error = $this->getParamString( 'error' );
 		
 			
 		$rep->Tpl->assignParameter( 'MAIN', '');
+		$rep->Tpl->assignParameter( 'error', $error );
 		
 		return $rep;
 	}
@@ -31,9 +33,9 @@ class auth
 	{
 		$rep = $this->getResponse('redirect');
 		
-		
 		$login = $this->getParamString( 'login' );
 		$password = $this->getParamString( 'password' );
+		
 		
 		if( \damix\engines\authentificate\Auth::login( $login, $password ) )
 		{
@@ -43,6 +45,7 @@ class auth
 		else
 		{
 			$rep->selector = \damix\engines\settings\Setting::getValue('default', 'auth', 'formauth');
+			$rep->params = array( 'error' => true);
 		}
 		
 		

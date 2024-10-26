@@ -44,6 +44,10 @@ class OrmFormula
 				case 'property':
 					$this->addParameterField( $param['table'], $param['property'], $param['ref'] );
 					break;
+				case 'raw':
+					$this->addParameterRaw( $param['value'] );
+					break;
+				
 			}
 		}
 	}

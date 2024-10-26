@@ -27,6 +27,7 @@ abstract class OrmBaseProperties
 	public function __set( $name, $value )
     {
         $this->_properties[ $name ][ 'value' ] = $value;
+		$this->_properties[ $name ][ 'update' ] = true;
     }
     
     public function __get( $name )
@@ -34,11 +35,20 @@ abstract class OrmBaseProperties
         return $this->_properties[ $name ][ 'value' ] ?? null;
     }
 	
+	public function getProperty( $name ) : array
+    {
+        return $this->_properties[ $name ];
+    }
 	
 	public function getProperties() : array
 	{
 		return $this->_properties;
 	}
+	
+	public function getIndexes() : array
+    {
+        return $this->_index;
+    }
 	
 	public function load( mixed $id ) : void
     {
@@ -56,7 +66,8 @@ abstract class OrmBaseProperties
         {
             foreach( $properties as $name => $property)
             {
-				$this->{ $name } = $record->{$prefix . $name};
+				$this->_properties[ $name ][ 'value' ] = $record->{$prefix . $name};
+				$this->_properties[ $name ][ 'update' ] = false;
             }
 			return true;
         }
@@ -95,7 +106,10 @@ abstract class OrmBaseProperties
         
         foreach( $properties as $name => $property )
         {
-            $record->{ $property['realname'] } = $this->{$name};
+			if( !isset( $property['update']) || $property['update'] )
+			{
+				$record->{ $property['realname'] } = $this->{$name};
+			}
         }
         
 		\damix\engines\events\Event::notify( 'ormbeforesave', array('record' => $record, 'orm' => $this));
@@ -165,6 +179,10 @@ abstract class OrmBaseProperties
 				$value = $this->getDefault($prop);
 			}
 			
+			if( $value === '#null#' )
+			{
+				$value = null;
+			}
 			switch( $this->_properties[ $name ]['datatype'] )
 			{
 				case 'autoincrement':
@@ -174,6 +192,7 @@ abstract class OrmBaseProperties
 				case 'bigint':
 					if( $value !== null )
 					{
+						
 						$value = intval( \damix\engines\tools\xTools::parseInt( $value ) );
 					}
 					break;

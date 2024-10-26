@@ -40,8 +40,8 @@ abstract class UrlBase
 	{
 		$c = \damix\engines\settings\Setting::get('default');
 		$scriptname = $c->get( 'url', 'scriptname' );
-		
 		$url = Url::getBasePath() . $scriptname;
+		
 		return $url;
 	}
 	

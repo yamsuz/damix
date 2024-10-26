@@ -411,7 +411,6 @@ class TemplateGenerator
 					$classname = $path['classname'];
 					$obj = new $classname();
 					$obj->endBlock = $endBlock;
-				// \damix\engines\logs\log::dump( $name );
 					$res=$obj->Execute($argfct);
 					$this->templateDrivers['function'][$name]['load']=true;
 				}else if($path=$this->_getPlugin('function',$name)){
@@ -422,7 +421,6 @@ class TemplateGenerator
 					$res.='$obj = new ' . $path['classname'].'();';
 					$res.='print $obj->Execute( '.(trim($argfct)!=''? $argfct:'').');';
 					$this->templateDrivers['function'][$name]['load']=true;
-					// $this->_pluginPath[$path[0]]=true;
 				}else if(isset($this->_userFunctions[$name])){
 					$argfct=$this->_parseFinal($args,$this->_allowedAssign);
 					$res=$this->_userFunctions[$name].'( $t'.(trim($argfct)!=''?','.$argfct:'').');';

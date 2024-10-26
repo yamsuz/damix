@@ -57,6 +57,11 @@ function help()
 	print "  " . "-a [application] -e bddupgrade : upgrade de la bdd" . "\r\n";
 	print "  " . "-a [application] -e useradd -u [login] -p [password]: ajouter un utilisateur" . "\r\n";
 	print "  " . "-a [application] -e ormdiscover -m [nomModule] : Autodiscover de la base de donnée" . "\r\n";
+	print "  " . "-a [application] -e aclupdate : Mise a jour des acls" . "\r\n";
+	print "  " . "-a [application] -e pagecreate -m [nomModule] -c [nom] : Creation d'une page" . "\r\n";
+	print "  " . "-a [application] -e templatecreate -m [nomModule] -c [nomZone] : Creation d'un template" . "\r\n";
+	print "  " . "-a [application] -e zonecreate -m [nomModule] -c [nomZone] : Creation d'une zone" . "\r\n";
+	print "  " . "-a [application] -e controllercreate -m [nomModule] -c [nomController] : Creation d'un controller" . "\r\n";
 	print "  " . "-h" . "\t" . "Cette aide" . "\r\n";
 }
 

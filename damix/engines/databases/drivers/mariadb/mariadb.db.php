@@ -32,6 +32,7 @@ class MariadbDbConnection
 	
 	protected function _doQuery(string $query) : ?\damix\engines\databases\DbResultSet
 	{
+		\damix\engines\logs\log::log( $this->database, 'sql' );
 		\damix\engines\logs\log::log( $query, 'sql' );
 		if($qI=$this->cnx->query($query)){
 			return new \damix\engines\databases\drivers\MariadbDbResultSet($qI);
@@ -45,6 +46,7 @@ class MariadbDbConnection
 	
 	protected function _doExec(string $query) : int|string
 	{
+		\damix\engines\logs\log::log( $this->database, 'sql' );
 		\damix\engines\logs\log::log( $query, 'sql' );
 		if($this->cnx->query($query))
 		{

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.0/phpunit.xsd"
+         cacheDirectory="../../phpunit/phpunit.cache"
+         executionOrder="depends,defects"
+         requireCoverageMetadata="true"
+         beStrictAboutCoverageMetadata="true"
+         beStrictAboutOutputDuringTests="false"
+         colors="true"
+         stopOnFailure="false"
+         stopOnError="false"
+         failOnRisky="false"
+         failOnWarning="true">
+    <testsuites>
+        <testsuite name="default">
+            <directory>../damix-tests</directory>
+            <!-- <directory>../damix-tests/engines/orm/mariadb</directory> -->
+        </testsuite>
+    </testsuites>
+
+    <coverage>
+        <include>
+            <directory suffix=".php">F:\Github\damix\trunk\damix\core</directory>
+            <directory suffix=".php">F:\Github\damix\trunk\damix\engines</directory>
+        </include>
+    </coverage>
+	
+	<php>
+		<env name="APP_ENV" value="testing"/>
+		<!-- <ini name="xdebug.mode" value="coverage"/> -->
+	</php>
+</phpunit>

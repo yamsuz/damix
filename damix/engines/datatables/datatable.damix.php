@@ -50,6 +50,11 @@ class Datatable
         return $obj;
     }
     
+	public static function clearTemp(  DatatableSelector $selector ): void
+	{
+		\damix\engines\tools\xFile::remove( $selector->getTempPath() );
+	}
+	
     public static function saveUser( array $params ) : void
     {        
         $selector = $params['selector'] ?? null;
@@ -84,6 +89,8 @@ class Datatable
         Datatable::filelistcompletion( $dom, $params );
         
         $dom->save( $datatableselector->getFileUser() );
+		
+		Datatable::clearTemp( $datatableselector );
     }
 
     public static function saveDefault( array $params ) : void
@@ -107,7 +114,7 @@ class Datatable
         }
         else
         {
-            $dom = \damix\engines\tools\xmldocument::createDocument('compiler');
+            $dom = \damix\engines\tools\xmldocument::createDocument('datatable');
             $child = $dom->firstChild;
             $child->setAttribute( 'version', '1.0' );
             $child->setAttribute( 'driver', 'datatable' );
@@ -125,11 +132,11 @@ class Datatable
     {
         $name = $params['name'];
         
-        $item = $dom->xPath( '/compiler/screen/list[@name="' . $name . '"]' );
+        $item = $dom->xPath( '/datatables/screen/list[@name="' . $name . '"]' );
  
         if( $item && $item->length == 0 )
         {
-            $listescreen = $dom->xPath( '/compiler/screen' );
+            $listescreen = $dom->xPath( '/datatables/screen' );
             if( $listescreen && $listescreen->length == 0 )
             {
                 $screen = $dom->addElement( 'screen', $dom->firstChild, array( 'name' => 'screen', 'default' => 'default' ) );
@@ -157,12 +164,11 @@ class Datatable
     private static function filelistcompletion(\damix\engines\tools\xmldocument $dom, array $params, bool $default = false) : void
     {
         $name = $params['name'];
-        
-        $item = $dom->xPath( '/compiler/screen/list[@name="' . $name . '"]' );
+        $item = $dom->xPath( '/datatables/screen/list[@name="' . $name . '"]' );
  
         if( $item && $item->length == 0 )
         {
-            $listescreen = $dom->xPath( '/compiler/screen' );
+            $listescreen = $dom->xPath( '/datatables/screen' );
             if( $listescreen && $listescreen->length == 0 )
             {
                 $screen = $dom->addElement( 'screen', $dom->firstChild, array( 'completion' => 'screen', 'default' => 'default' ) );
@@ -212,7 +218,7 @@ class Datatable
         $autoload->setAttribute( 'value', $value );
     }
     
-    private static function filelistcompletionfilters($dom, $list, $params) : void
+    private static function filelistcompletionfilters(\damix\engines\tools\xmldocument $dom, $list, $params) : void
     {
         $item = $dom->xPath( 'filters', $list );
         if( $item && $item->length == 0 )
@@ -242,10 +248,11 @@ class Datatable
 					$data['cols'] = $column + 1;
 				}
                 $filter->setAttribute( 'name', $data['field']);
+                $filter->setAttribute( 'ref', $data['ref']);
                 $filter->setAttribute( 'header', $data['header']);
                 $filter->setAttribute( 'locale', $data['locale']);
-                $filter->setAttribute( 'row', $data['rows']);
-                $filter->setAttribute( 'column', $data['cols']);
+                $filter->setAttribute( 'row', strval($data['rows']));
+                $filter->setAttribute( 'column', strval($data['cols']));
                 $filter->setAttribute( 'group', $data['group']);
                 $filter->setAttribute( 'datatype', $data['datatype']);
                 $filter->setAttribute( 'selector', $data['selector']);
@@ -269,13 +276,15 @@ class Datatable
                 }
             }
         }
-        $filters->setAttribute( 'cols', $column + 1);
-        $filters->setAttribute( 'rows', $row + 1);
+        $filters->setAttribute( 'cols', strval( $column + 1 ));
+        $filters->setAttribute( 'rows', strval( $row + 1));
 
     }
     
-    private static function filelistcompletiondatatable($dom, $list, $params) : void
+    private static function filelistcompletiondatatable(\damix\engines\tools\xmldocument $dom, $list, $params) : void
     {
+		// \damix\engines\logs\log::dump( $params );
+		
         $item = $dom->xPath( 'datatable', $list );
         if( $item && $item->length == 0 )
         {
@@ -297,7 +306,7 @@ class Datatable
         }
 
         $remove = $dom->removeElement( $columns->childNodes, $columns );
-        
+       
         if( isset( $params['data'] ) )
         {
             foreach( $params['data'] as $data )
@@ -307,7 +316,17 @@ class Datatable
 				{
 					try
 					{
-						if( $node->hasAttribute( 'name' ) )
+						if( $node->hasAttribute( 'ref' ) )
+						{
+							if( $node->getAttribute( 'ref' ) == $data['ref' ] )
+							{
+								$columns->appendChild( $node );
+								$column = $node;
+								unset( $remove[$i] );
+								continue;
+							}
+						}
+						elseif( $node->hasAttribute( 'name' ) )
 						{
 							if( $node->getAttribute( 'name' ) == $data['field' ] )
 							{
@@ -327,6 +346,7 @@ class Datatable
 					$column = $dom->addElement( 'column', $columns );
 				}
              
+                $column->setAttribute( 'ref', $data['ref']);
                 $column->setAttribute( 'name', $data['field']);
                 $column->setAttribute( 'header', $data['header']);
                 $column->setAttribute( 'datatype', $data['datatype']);
@@ -363,15 +383,6 @@ class Datatable
 				}
 				
             }
-			
-			foreach( $remove as $i => $node )
-			{
-				$columns->appendChild( $node );
-				if(  $node instanceof DOMNode )
-				{
-					$node->setAttribute( 'visible', 0);
-				}
-			}
         }
     }
 }

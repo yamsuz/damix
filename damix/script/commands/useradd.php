@@ -16,10 +16,30 @@ class CommandUseradd
 		$this->application = $params['a'] ?? null;
 		$login = $params['u'] ?? null;
 		$password = $params['p'] ?? null;
+		$driver = $params['d'] ?? null;
 		
 		
-		$auth = \damix\engines\authentificate\Auth::get( );
-		$auth->userNew($login, $password);
+		$auths = \damix\engines\authentificate\Auth::get( );
+		if( $auths->count() > 1) 
+		{
+			if( $driver === null )
+			{
+				self::display( 'Le nom du driver est obligatoire.');
+				return;
+			}
+			
+			foreach( $auths as $auth )
+			{
+				if( $auth->getDriverName() == $driver )
+				{
+					$auth->userNew($login, $password);					
+				}
+			}
+		}
+		else
+		{
+			$auths->userNew($login, $password);
+		}
 	}
 		
 }

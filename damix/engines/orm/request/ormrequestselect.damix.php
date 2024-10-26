@@ -83,7 +83,7 @@ class OrmRequestSelect
         $join = new \damix\engines\orm\request\structure\OrmJointure();
         $join->type = $type;
         $join->table = $table;
-        $join->alias = $alias != '' ? $alias : $name;
+        $join->alias = $alias != '' ? $alias : $table->getName();
         $this->joins[] = $join;
         
         return $join;

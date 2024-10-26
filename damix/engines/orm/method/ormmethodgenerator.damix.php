@@ -19,7 +19,7 @@ class OrmMethodGenerator
     public function generate( \damix\engines\orm\method\OrmMethodSelector $selector ) : bool
     {
 		$this->_selector = $selector;
-		// \damix\engines\logs\log::log( $selector->getTempPath( ) .  ' ' . __LINE__ );
+
         if( $this->open( $selector ) )
         {
             $this->_document = \damix\engines\tools\xmlDocument::createDocument('orm');

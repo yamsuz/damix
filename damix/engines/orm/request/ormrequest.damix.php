@@ -77,14 +77,14 @@ class OrmRequest
         return $this->structure->query( $this );
     }
 	
-	public function executeNonQuery() : int|string
+	public function executeNonQuery(string $profile = '') : int|string
     {
-        return $this->structure->executeNonQuery( $this );
+        return $this->structure->executeNonQuery( $this, $profile );
     }
 	
-	public function execute() : ?\damix\engines\databases\DbResultSet
+	public function execute(string $profile = '') : ?\damix\engines\databases\DbResultSet
     {
-        return $this->structure->execute( $this );
+        return $this->structure->execute( $this, $profile );
     }
 	
 	public function getSQL() : string
@@ -97,9 +97,9 @@ class OrmRequest
         return $this->structure->SchemaBase();
     }
 	
-	public function SchemaTable() : ?\damix\engines\databases\DbResultSet
+	public function SchemaTable(string $profile = '') : ?\damix\engines\databases\DbResultSet
     {
-        return $this->structure->SchemaTable( $this->table );
+        return $this->structure->SchemaTable( $this->table, $profile );
     }
 	
 	public function SchemaIndex() : ?\damix\engines\databases\DbResultSet
@@ -117,9 +117,9 @@ class OrmRequest
         return $this->structure->SchemaTrigger( $this->table );
     }
 	
-	public function SchemaColonne() : ?\damix\engines\databases\DbResultSet
+	public function SchemaColonne(string $profile = '') : ?\damix\engines\databases\DbResultSet
     {
-        return $this->structure->SchemaColonne( $this->table );
+        return $this->structure->SchemaColonne( $this->table, $profile );
     }
 	
 	public function SchemaStored() : ?\damix\engines\databases\DbResultSet

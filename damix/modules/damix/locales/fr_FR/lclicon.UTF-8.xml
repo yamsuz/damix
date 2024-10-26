@@ -13,18 +13,26 @@
 		<locale name="icon.enregistrer.title">Enregistrer</locale>
 		<locale name="icon.exporter.label">Exporter</locale>
 		<locale name="icon.exporter.title">Exporter</locale>
+		<locale name="icon.import.label">Import</locale>
+		<locale name="icon.import.title">Import</locale>
 		<locale name="icon.modifier.label">Modifier</locale>
 		<locale name="icon.modifier.title">Modifier</locale>
 		<locale name="icon.password.label">Mot de passe</locale>
 		<locale name="icon.password.title">Mot de passe</locale>
+		<locale name="icon.pointage.label">Pointage</locale>
+		<locale name="icon.pointage.title">Pointage</locale>
 		<locale name="icon.recherche-filtre.label">Rechercher</locale>
 		<locale name="icon.recherche-filtre.title">Rechercher</locale>
 		<locale name="icon.recherche.label">Rechercher</locale>
 		<locale name="icon.recherche.title">Rechercher</locale>
+		<locale name="icon.selection.label">Séléction</locale>
+		<locale name="icon.selection.title">Séléction</locale>
 		<locale name="icon.supprimer.label">Supprimer</locale>
 		<locale name="icon.supprimer.title">Supprimer</locale>
 		<locale name="icon.valider.label">Valider</locale>
 		<locale name="icon.valider.title">Valider</locale>
+		<locale name="icon.ventilation.label">Ventilation</locale>
+		<locale name="icon.ventilation.title">Ventilation</locale>
 	</section>
 	<section name="popup">
 		<locale name="popup.error.title">Erreurs</locale>

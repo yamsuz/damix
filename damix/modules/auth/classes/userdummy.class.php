@@ -29,7 +29,7 @@ class Userdummy
 	{
 		$orm = \damix\engines\orm\Orm::get( 'auth~tormusers' );
 		$c = $orm->getConditionsClear('select');
-		$c->addString( 'login', \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, $login );
+		$c->addString( '{ORM_USERS}:login', \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, $login );
 		$liste = $orm->select();
 		if( $record = $liste->fetch() )
 		{

@@ -21,6 +21,7 @@ class ResponseBaseJson
 	
 	public function output() : void
 	{
+		$this->addHttpHeader('Content-Type', 'application/json', false);
 		$this->sendHttpHeaders();
 		
 		$out = json_encode( $this->data );

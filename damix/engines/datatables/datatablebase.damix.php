@@ -27,9 +27,11 @@ class DatatableBase
     protected array $orders = array();
     protected array $kanban = array();
     protected bool $autoload = true;
+    protected bool $paging = false;
     protected array $parameters;
-    protected \Iterator $datas;
+    protected ?\Iterator $datas = null;
     protected array $table = array();
+    protected array $data = array();
     
     protected \damix\engines\orm\OrmBaseFactory $orm;
     
@@ -49,12 +51,12 @@ class DatatableBase
         return $this->module . '_' . $this->resource . '_' . $this->function;
     }
 	
-	public function getOrmSelector()
+	public function getOrmSelector() : string
     {
-        return $this->ormselector['selector'];
+        return $this->ormselector['module'] . '~' . $this->ormselector['resource'] . ':' . $this->ormselector['function'];
     }
     
-	public function getSelector()
+	public function getSelector() : string
     {
         return $this->module . '~' . $this->resource . ':' . $this->function;
     }
@@ -68,6 +70,7 @@ class DatatableBase
         $out[] = '$xlist.type = \''. $this->type .'\';';
         $out[] = '$xlist.id = \'#' . $this->getId() . '\';';
         $out[] = '$xlist.selection = \'' . $this->selection . '\';';
+        $out[] = '$xlist.paging = ' . ($this->paging ? 'true' : 'false') . ';';
         $out[] = '$xlist.autoload = ' . ($this->autoload ? 'true' : 'false') . ';';
 
         foreach( $this->condition as $cond )
@@ -120,8 +123,8 @@ class DatatableBase
 	{
 		$this->parameters = $params;
 		
-		$this->loadValues();
 		$this->loadColumns();
+		$this->loadValues();
 		if( $this->autoload || $this->parameters['draw'] > 1 )
 		{
 			$this->getDataValues();
@@ -129,15 +132,74 @@ class DatatableBase
 		
 		return $this->getDatatable();
 	}
+	
+	public function exportData( array $params ) : string
+    {
+		$this->paging = false;
+		$this->parameters = $params;
+		
+		$this->loadColumns();
+		$this->loadValues();
+		if( $this->autoload || $this->parameters['draw'] > 1 )
+		{
+			$this->getDataValues();
+		}
+        
+        $data = array_column( $this->table['columns'], 'data');
+		$filename = \damix\application::getPathTemp() . \damix\engines\tools\xTools::login() . '.csv';
+		$fp = fopen($filename, 'w');
+		fwrite($fp, "\xEF\xBB\xBF");
+		$this->fputcsv($fp, $data);
+		
+		$columns = $this->table['columns'];
+		$rows = $this->table['rows'] ?? array();
+		
+		$enclosure = '"';
+		$escape_char = "\\";
+		$delimiter = ";";
+		$record_seperator = PHP_EOL;
+
+		foreach( $rows as $row )
+		{
+
+			$data = array();
+			foreach( $columns as $i => $col )
+			{
+				$data[] = $row[$i]['value'];
+			}	
+			$this->fputcsv($fp, $data);
+		}
+	
+		fclose($fp);
+		
+        return $filename;
+    }
     
+	private function fputcsv( $handle, array $fields, string $delimiter = ";", string $enclosure = '"', string $escape_char = "\\", string $record_seperator = PHP_EOL) :  bool
+	{
+		$result = [];
+		foreach ($fields as $field) {
+			$result[] = $enclosure . str_replace($enclosure, $escape_char . $enclosure, $field ?? '') . $enclosure;
+		}
+		return fwrite($handle, implode($delimiter, $result) . $record_seperator) > 0;
+	}
+	
 	public function getDatatable() : \StdClass
 	{
 		$columns = $this->table['columns'];
 		$rows = $this->table['rows'] ?? array();
 		$nb = count($rows);
 		$obj = new \StdClass();
-		$obj->recordsTotal = $nb;
-		$obj->recordsFiltered = $nb;
+		if( $nb > 0 ) 
+		{
+			$obj->recordsTotal = $this->datas->rowCount();
+			$obj->recordsFiltered = $this->datas->rowCount();
+		}
+		else
+		{
+			$obj->recordsTotal = 0;
+			$obj->recordsFiltered = 0;
+		}
 		$obj->data = array();
 		
 		foreach( $rows as $row )
@@ -157,13 +219,25 @@ class DatatableBase
 		return $obj;
 	}
 	
+	public function getDatatableStructure(?string $name = null) : array
+	{
+		$columns = $this->datatable[ $name ?? $this->default ] ?? array();
+		$data = array();
+		foreach( $columns as $i => $col )
+		{
+			$data[ $col['name'] ] = $col;
+		}	
+	
+		return $data;
+	}
+	
 	protected function loadValues() : void
 	{
 		$this->orm = \damix\engines\orm\Orm::get( $this->ormselector['module'] . '~' . $this->ormselector['resource'] );
 		
         $this->getDataValuesConditions();
         $this->getDataValuesOrders();
-		
+				
 		$this->datas = $this->orm->{ $this->ormselector['function'] }();
 		
 		// \damix\engines\logs\log::dump( $this->datas->fetchAll() );
@@ -173,9 +247,24 @@ class DatatableBase
     {
         $data = array();
         \damix\engines\datatables\drivers\DatatableDriver::$parameters = $this->datas;
-        foreach( $this->datas as $record )
+		
+		if( $this->paging )
+		{
+			$start = intval($this->parameters['page']['start']);
+			$RowCount = $start + intval($this->parameters['page']['length']);
+		}
+		else
+		{
+			$start = 0;
+			$RowCount = $this->datas->rowCount();
+		}
+
+        foreach( $this->datas as $i => $record )
         {
-            $this->getDataValuesRecord( $record );
+			if( $i >= $start && $i < $RowCount )
+			{
+				$this->getDataValuesRecord( $record );
+			}
         }
     }
 	
@@ -232,8 +321,8 @@ class DatatableBase
 	
 	private function getFormatData( array $col, ?string $value ) : mixed
 	{
-		
 		$datatype = $col['datatype'];
+
 		switch( $datatype )
 		{
 			case \damix\engines\orm\request\structure\OrmDataType::ORM_INT:
@@ -266,7 +355,7 @@ class DatatableBase
 				break;
 			case \damix\engines\orm\request\structure\OrmDataType::ORM_DECIMAL:
 			case \damix\engines\orm\request\structure\OrmDataType::ORM_FLOAT:
-				$value = \damix\engines\tools\xTools::numberFormat( $value );
+				$value = \damix\engines\tools\xTools::numberFormat( floatval($value) );
 				break;
 			case \damix\engines\orm\request\structure\OrmDataType::ORM_PHONE:
 				$value = \damix\engines\tools\xTools::phoneFormat( $value );
@@ -287,7 +376,7 @@ class DatatableBase
 		return $value;
 	}
 	
-	protected function loadColumns() : void
+	protected function loadColumns(?string $name = null) : void
 	{
 		$columns = $this->datatable[ $name ?? $this->default ] ?? array();
 		
@@ -397,15 +486,17 @@ class DatatableBase
         {
 			$name = $this->parameters['name'];
 			
-			// \damix\engines\logs\log::dump( $this->parameters['filter'] );
+			// \damix\engines\logs\log::dump( $this->filters );
             foreach( $this->parameters['filter'] as $field => $filters )
             {
                 if( count( $filters ) > 0 && isset( $this->filters[$name] ))
                 {
                     $property = $this->filters[$name][$field];
+					$field = $property['field'];
                     switch( $property['datatype'] )
                     {
                         case 'date':
+                        case 'datetime':
 			
 							if( ! empty( $filters[0] ) )
 							{
@@ -426,12 +517,12 @@ class DatatableBase
 									{
 										$val2 = null;
 									}
-									$c->addPeriod( $property, $val1, $val2, 'g1' );
+									$c->addPeriod( $field, $val1, $val2, 'g1' );
 									break;
 								default:
 									if( $val1 )
 									{
-										$c->addDate( $property, \damix\engines\orm\conditions\OrmOperator::cast( $property['operator'] ), $val1, 'g1' );
+										$c->addDate( $field, \damix\engines\orm\conditions\OrmOperator::cast( $property['operator'] ), $val1, 'g1' );
 									}
 									break;
 							}
@@ -442,7 +533,7 @@ class DatatableBase
 							{
 								break;
 							}
-                            $c->addContain( $property, $filters[0], 'g1' );
+                            $c->addContain( $field, $filters[0], 'g1' );
                             break;
                         case 'select':
 							if( empty( $filters[0] ) )
@@ -473,7 +564,7 @@ class DatatableBase
 								}
 								if( $null )
 								{
-									$c->addNull( $property, 'g1' );
+									$c->addNull( $field, 'g1' );
 									if( $nb > 0 )
 									{
 										$c->addLogic( \damix\engines\orm\conditions\OrmOperator::ORM_OP_OR );
@@ -481,7 +572,7 @@ class DatatableBase
 								}
 								if( $nb > 0 )
 								{
-									$c->addString( $property, $property['operator'], $tmp, 'g1' );
+									$c->addString( $field, $property['operator'], $tmp, 'g1' );
 								}
 								if( $null || $nb > 0 )
 								{
@@ -492,23 +583,23 @@ class DatatableBase
 							{
 								if( $filters[0] == '#null#' )
 								{
-									$c->addNull( $property, 'g1' );
+									$c->addNull( $field, 'g1' );
 								}
 								else
 								{
-									$c->addString( $property, \damix\engines\orm\conditions\OrmOperator::cast( $property['operator'] ), $filters[0], 'g1' );
+									$c->addString( $field, \damix\engines\orm\conditions\OrmOperator::cast( $property['operator'] ), $filters[0], 'g1' );
 								}
 							}
                             break;
                         case 'bool':
 							if( $filters[0] !== '' )
 							{
-								$c->addBool( $property, \damix\engines\orm\conditions\OrmOperator::cast( $property['operator'] ), ( $filters[0] == '1' ? true : false), 'g1' );
+								$c->addBool( $field, \damix\engines\orm\conditions\OrmOperator::cast( $property['operator'] ), ( $filters[0] == '1' ? true : false), 'g1' );
 							}
                         default:
 							if( ! empty( $filters[0] ) )
 							{
-								$c->addString( $property, \damix\engines\orm\conditions\OrmOperator::cast( $property['operator'] ), $filters[0], 'g1' );
+								$c->addString( $field, \damix\engines\orm\conditions\OrmOperator::cast( $property['operator'] ), $filters[0], 'g1' );
 							}
                             break;
                     }
@@ -548,10 +639,9 @@ class DatatableBase
 		
 		if( count( $orders ) == 0)
 		{
-			$orders = $this->_orders[ $name ?? $this->default ] ?? array();
+			$orders = $this->orders[ $name ?? $this->default ] ?? array();
 		}
-		$tab = $this->datatable[$name ?? $this->default];
-		
+
 		foreach( $orders as $info )
 		{		
 			$order = new \damix\engines\orm\request\structure\OrmOrder();
@@ -560,4 +650,26 @@ class DatatableBase
 			$o->add( $order );
 		}
 	}
+	
+	public function getOrders( ?string $name = null ) : array
+    {
+        $table = $this->_orders[ $name ?? $this->_default ] ?? array();
+        $out = array();
+        foreach( $table as $elt )
+        {
+            $out[ $elt['name'] ] = $elt;
+        }
+        return $out;
+    }
+	
+	 public function getDataFilter( ?string $name = null ) : array
+    {
+        $table = $this->_filters[ $name ?? $this->_default ] ?? array();
+        $out = array();
+        foreach( $table as $elt )
+        {
+            $out[ $elt['name'] ] = $elt;
+        }
+        return $out;
+    }
 }

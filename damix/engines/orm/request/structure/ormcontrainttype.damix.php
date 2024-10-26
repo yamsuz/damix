@@ -19,7 +19,7 @@ enum OrmContraintType: string
 	
 	public static function cast(string $value): OrmContraintType
     {
-		$out = self::tryFrom( $value );
+		$out = self::tryFrom( strtolower( $value ));
 		
         if( $out === null )
 		{

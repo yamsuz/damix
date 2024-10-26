@@ -79,4 +79,12 @@ abstract class Controller
 	{
 		return $this->request->getParamDate( $name, $default );
 	}
+	
+	public function auth() : bool
+	{
+		$login = $_SERVER['PHP_AUTH_USER'] ?? '';
+		$password = $_SERVER['PHP_AUTH_PW'] ?? '';
+	
+		return \damix\engines\authentificate\Auth::login( $login, $password );
+	}
 }

@@ -16,7 +16,7 @@ class xmlDocument
 		parent::__construct('1.0', 'UTF-8');
 	}
 	
-    public function load( $filename, $preserveWhiteSpace = false) : DOMDocument|bool
+    public function load( $filename, $preserveWhiteSpace = false) : bool
     {
         if( is_readable( $filename ) )
         {

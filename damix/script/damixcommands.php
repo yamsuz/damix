@@ -13,7 +13,7 @@ class DamixCommands
 	
 	public function __construct()
 	{
-		$this->directory = __DIR__ . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'apps' . DIRECTORY_SEPARATOR;
+		$this->directory = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'apps' . DIRECTORY_SEPARATOR;
 		$this->dirtemplate = __DIR__ . DIRECTORY_SEPARATOR . 'templates';
 	}
 	

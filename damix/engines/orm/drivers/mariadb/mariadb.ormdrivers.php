@@ -16,6 +16,10 @@ class OrmDriversMariadb
 	{
 		return false;
 	}
+	public function isCaseManagement() : bool 
+	{
+		return false;
+	}
 	
     protected function getRequestSQLCreateOption(\damix\engines\orm\request\structure\OrmTable $table) : string
 	{
@@ -119,5 +123,13 @@ class OrmDriversMariadb
 		
 		$sql = implode("\n", $sql );
         return $sql;
+	}
+	
+	protected function getConditionLeft(array $condition) : string
+	{
+		
+		
+		
+		return parent::getConditionLeft( $condition );
 	}
 }

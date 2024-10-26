@@ -28,6 +28,7 @@ abstract class Selector
     public string $_prefix = '';
     public string $_selector = '';
     public array $_parameters = array();
+    public array $completion = array();
     public bool $usercompletion = true;
     protected bool $classnameuser = false;
     protected string $classnamebase = '';

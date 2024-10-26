@@ -13,7 +13,7 @@ class AuthDb
 	extends \damix\engines\authentificate\AuthBase
 {
 	
-	protected ?\damix\auth\Userdummy $Userdummy = null;
+	protected ?\damix\auth\iUsers $Userdummy = null;
 	
 	public function __construct()
 	{
@@ -27,6 +27,11 @@ class AuthDb
 	public function setup() : void
 	{
 		$this->Userdummy->setup();
+	}
+	
+	public function getDriverName() : string
+	{
+		return 'db';
 	}
 	
 	protected function findUser(string $login) : bool
@@ -50,7 +55,7 @@ class AuthDb
 	{
 		if( ! $this->Userdummy->loadUser( $login ) )
 		{
-			$this->Userdummy->idusers = null;
+			$this->Userdummy->clear();
 			$this->Userdummy->login = $login;
 			$this->Userdummy->password = $this->cryptPassword($password);
 			$this->Userdummy->save();

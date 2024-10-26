@@ -67,6 +67,12 @@ abstract class DbResultSet
 		return $this->_fetch();
 	}
 	
+	public function seek(int $value) : void
+	{
+		$this->_recordIndex=$value;
+		$this->_currentRecord=$this->fetch();
+	}
+	
 	public function fetchAll() : array
 	{
 		$result=array();

@@ -17,10 +17,10 @@ class Ldap
 		$default = \damix\engines\settings\Setting::get('default');
 		$ldapserver = $default->get('auth', 'ldapserver');
 		$ldapport = $default->get('auth', 'ldapport');
-		
+
 		$this->cnx = ldap_connect($ldapserver, intval($ldapport));
 		ldap_set_option($this->cnx, LDAP_OPT_PROTOCOL_VERSION, 3);
-		ldap_set_option($this->cnx, LDAP_OPT_REFERRALS, 0);
+		ldap_set_option($this->cnx, LDAP_OPT_REFERRALS, false);
 		
 		if( $this->cnx )
 		{
@@ -36,7 +36,7 @@ class Ldap
 	public function bind($login, $password) : bool
 	{
 		if( $this->cnx ){
-			return ldap_bind($this->cnx, $login, $password);
+			return @ldap_bind($this->cnx, $login, $password);
 		}
 		return false;
 	}

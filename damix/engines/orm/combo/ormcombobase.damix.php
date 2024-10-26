@@ -21,6 +21,7 @@ class OrmComboBase
     protected int $_offset;
     protected int $_rowcount;
     protected bool $_firstempty;
+    protected bool $_remotedata;
     protected array $_data = array();
     protected array $_property = array();
     
@@ -28,10 +29,43 @@ class OrmComboBase
     {
     }   
     
-    public function getInnerHtml()
+    public function getInnerHtml() : string
     {
         return $this->_html;
     }
+    
+    protected function propertyinit()
+    {
+		
+    }
+    
+	public function getDisplays() : array
+	{
+		$out = array();
+	   
+		foreach( $this->_property['option'] as $prop )
+		{
+			switch( $prop['type'] )
+			{
+				case 'reference':
+				case 'property':
+					$out[] = $prop['value'];
+					break;
+			}
+		}
+		
+		return $out;
+	}
+	
+	public function getRemoteData() : bool
+	{
+		return $this->_remotedata;
+	}
+	
+	public function getValue() : string
+	{
+		return $this->_value;
+	}
     
     public function getHtml(string $name, string $placeholder = '', bool $multiple = false) : string
     {
@@ -86,6 +120,9 @@ class OrmComboBase
         
         $liste = $obj->{ $this->_function }();
 		
+		
+		$propvalue = $this->getProperty( $this->_value );
+		
         foreach( $liste as $info )
         {
             $display = '';
@@ -97,26 +134,34 @@ class OrmComboBase
                     case 'property':
                         $display .= $info->{ $dis[ 'value' ] };
                         break;
+					case 'reference':
+						$params['value'] = $this->getProperty( $dis[ 'value' ] );;
+						$display .= $info->{$params['value']};
                     case 'string':
                         $display .= $dis[ 'value' ];
                         break;
                 }
             }
 
-            $html .= '<option value="'. $info->{ $this->_value } .'">'. preg_replace( '/\'/', '\\\'', $display ) .'</option>';
+            $html .= '<option value="'. $info->{ $propvalue } .'">'. preg_replace( '/\'/', '\\\'', $display ) .'</option>';
         }
 		
         return $html;
     }
 	
-	public function getInnerConditionsArray( $limit = 0, $offset = 0 )
+	public function getInnerConditionsArray( int $limit = 0, int $offset = 0 )
     {
         $obj = \damix\engines\orm\Orm::get( $this->_orm );
         $o = $obj->getOrdersClear( $this->_function );
         
         foreach( $this->_property[ 'orders' ] as $order )
         {
-            $o->add( $order[ 'property' ], $order[ 'way' ] );
+			$ormorder = new \damix\engines\orm\request\structure\OrmOrder();
+
+			$ormorder->setColumn( $order[ 'property' ] );
+			$ormorder->setWay(\damix\engines\orm\request\structure\OrmOrderWay::cast( $order[ 'way' ]) );
+			
+			$o->add( $ormorder );
         }
 		
         $result = array();
@@ -129,7 +174,7 @@ class OrmComboBase
         }
 		
         $liste = $obj->{ $this->_function }();
-		
+		$propvalue = $this->getProperty( $this->_value );
         foreach( $liste as $info )
         {
 			$display = '';
@@ -141,6 +186,10 @@ class OrmComboBase
                     case 'property':
                         $display .= $info->{ $dis[ 'value' ] };
                         break;
+                    case 'reference':
+						$params['value'] = $this->getProperty( $dis[ 'value' ] );
+						$display .= $info->{$params['value']};
+                        break;
                     case 'string':
                         $display .= $dis[ 'value' ];
                         break;
@@ -148,11 +197,25 @@ class OrmComboBase
             }
 
             $result[] = array( 
-                'id' => $info->{ $this->_value }, 
-                'value' => preg_replace( '/\'/', '\\\'', $display ) 
+                'id' => $info->{ $propvalue }, 
+                'text' => preg_replace( '/\'/', '\\\'', $display ) 
             );
         }
 		
         return $result;
     }
+	
+	public function getProperty(string $value): string
+	{
+		if( $struct = \damix\engines\orm\Orm::getDefine( $value ))
+		{
+			$field = $struct['field'];
+
+			if( $field )
+			{
+				return $struct['orm']->realname . '_' . $field['realname'];
+			}
+		}
+		return $value;
+	}
 }

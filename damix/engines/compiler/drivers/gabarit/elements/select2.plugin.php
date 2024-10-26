@@ -11,75 +11,12 @@ namespace damix\engines\compiler\drivers\gabarit\elements;
 class GabaritElementSelect2
     extends \damix\engines\compiler\GabaritElementAll
 {
-    protected $_autoClose = false;
+    protected $_autoClose = true;
 
-    // public function beforeRead( \damix\engines\compiler\CompilerDriver $driver, \damix\engines\compiler\CompilerContentElement $node, \DOMNode $child ) : void
-    // {
-        // if( ! $child->hasAttribute( 'selectmultiple' ) )
-		// {
-            // $attr = new \damix\engines\compiler\CompilerContentAttribute();
-            // $attr->name = 'class';
-            // $attr->value = 'form-control m-select2 select2_simple xform_popup';
-            // $attr->plugin = $driver->getPluginAttribute( $attr->name );
-            // $node->appendAttributes( $attr );
-            // $node->name = 'select';
-        // }
-		// else
-		// {
-            // $attr = new \damix\engines\compiler\CompilerContentAttribute();
-            // $attr->name = 'class';
-            // $attr->value = 'form-control m-select2 select2_multiple xform_popup';
-            // $attr->plugin = $driver->getPluginAttribute( $attr->name );
-            // $node->appendAttributes( $attr );
-
-            // $attr = new \damix\engines\compiler\CompilerContentAttribute();
-            // $attr->name = 'multiple';
-            // $attr->plugin = $driver->getPluginAttribute( $attr->name );
-            // $node->appendAttributes( $attr );
-			
-			// $attr = new \damix\engines\compiler\CompilerContentAttribute();
-            // $attr->name = 'selectmultiplemax';
-            // $attr->value = $child->getAttribute( 'selectmultiple' );
-            // $attr->plugin = $driver->getPluginAttribute( $attr->name );
-            // $node->appendAttributes( $attr );
-
-            // $node->name = 'select';
-            // $node->removeAttributes( 'selectmultiple' );
-        // }
-
-        // parent::beforeRead( $driver, $node, $child );
-    // }
 
     public function read( \damix\engines\compiler\CompilerDriver $driver, \damix\engines\compiler\CompilerContentElement $node ) : void
     {
-        // if( $node->hasAttribute( 'selector' ) )
-		// {
-            // $rowcount = $node->getAttrValue( 'rowcount' );
-            // $selector = $node->getAttrValue( 'selector' );
-            // $node->removeAttributes( 'selector' );
-
-            // $attributes = $node->getAttributes();
-
-            // $params = array();
-            // foreach( $attributes as $attr ) 
-			// {
-                // $params[ $attr->name ] = $attr->value;
-            // }
-
-            // $param = array();
-            // if( $rowcount > 0 )
-            // {
-                // $param[ 'limit' ] = array( 'rowcount' => $rowcount ) ;
-            // }
-            
-            // $combo = \damix\engines\orm\combo\OrmCombo::get( $selector, $param );
-			
-            // $html = $combo->getInnerHtml( $params );
-			
-            // $node->name = 'select';
-            // $node->text = $html;
-        // }
-
+      
 		$driver->content->appendFunction( 'propertyinit', array(), array( '\damix\engines\orm\combo\OrmCombo::addJSLink();' ), 'public');
 
         parent::read($driver, $node);
@@ -94,8 +31,19 @@ class GabaritElementSelect2
 		
 		$selector = $node->getAttrValue( 'selector' );
 		$name = $node->getAttrValue( 'name' );
-        
-        $driver->content->addData( '_html', '__QUOTE__ . \damix\engines\orm\combo\OrmCombo::getHtml( __QUOTE__' . $selector . '__QUOTE__, __QUOTE__' . $name . '__QUOTE__, ) . __QUOTE__');
+		
+		$attrs = $node->getAttributes();
+		
+		$params = 'array(';
+		foreach( $attrs as $name => $value )
+		{
+			$params .= '__QUOTE__'. $name .'__QUOTE__ => __QUOTE__' . $value->value . '__QUOTE__,';
+		}
+		$params .= ')';
+		
+        $zone = \damix\engines\settings\Setting::getValue('default', 'formcontrols', 'zonecontrolselect');
+        // $driver->content->addData( '_html', '__QUOTE__ . \damix\engines\orm\combo\OrmCombo::getHtml( __QUOTE__' . $selector . '__QUOTE__, __QUOTE__' . $name . '__QUOTE__, ) . __QUOTE__');
+        $driver->content->addData( '_html', '__QUOTE__ . \damix\engines\zones\Zone::get( __QUOTE__' . $zone . '__QUOTE__, '.$params.') . __QUOTE__');
 		
 		$node->clearAttributes();
     }

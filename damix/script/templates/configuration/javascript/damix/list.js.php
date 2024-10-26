@@ -98,36 +98,45 @@ class xlist{
 		this.scrollY = "400px";
 		this.scroller = {loadingIndicator: true};
 		this.serverSide = true;
-		this.paging = false;
+		this.paging = true;
 		this.searching = false;
 		this.events = {};
-		this.bInfo = true;
+		this.info = true;
 		this.data = [];
 		this.language = {
-			emptyTable: "Aucun résultat",
-			zeroRecords: "Aucun résultat",
-			info: "Total : _TOTAL_ résultat(s)",
-			loadingRecords: "Chargement en cours ...",
-			processing: "Chargement en cours ...",
+			emptyTable: '<?php echo addslashes(\damix\engines\locales\Locale::get( 'damix~lclcore.datatable.aucunresultat' )); ?>',
+			zeroRecords: '<?php echo addslashes(\damix\engines\locales\Locale::get( 'damix~lclcore.datatable.aucunresultat' )); ?>',
+			info: '<?php echo addslashes(\damix\engines\locales\Locale::get( 'damix~lclcore.datatable.totallignes' )); ?>',
+			loadingRecords: '<?php echo addslashes(\damix\engines\locales\Locale::get( 'damix~lclcore.datatable.chargementencours' )); ?>',
+			processing: '<?php echo addslashes(\damix\engines\locales\Locale::get( 'damix~lclcore.datatable.chargementencours' )); ?>',
 			decimal: ",",
-			thousands: " "
+			thousands: " ",
+			lengthMenu: '<?php echo addslashes(\damix\engines\locales\Locale::get( 'damix~lclcore.datatable.lengthMenu' )); ?>',
+			paginate: {
+                first: '<?php echo addslashes(\damix\engines\locales\Locale::get( 'damix~lclcore.datatable.first' )); ?>',
+                last: '<?php echo addslashes(\damix\engines\locales\Locale::get( 'damix~lclcore.datatable.last' )); ?>',
+                next: '<?php echo addslashes(\damix\engines\locales\Locale::get( 'damix~lclcore.datatable.next' )); ?>',
+                previous: '<?php echo addslashes(\damix\engines\locales\Locale::get( 'damix~lclcore.datatable.previous' )); ?>',
+            },
 		};
 	}
 	
 	options(){
 		let type = this.type;
 		let obj = {
-			sScrollX: "100%",
-			processing : true,
-			serverSide : true,
+			scrollX: "100%",
+			processing : this.processing,
+			serverSide : this.serverSide,
+			language : this.language,
 			scrollY : this.scrollY,
 			scrollCollapse : true,
-			paging : false,
-			bInfo : this.bInfo,
+			paging : this.paging,
+			info : this.info,
 			order: [],
 			footer : false,
 			deferRender: true,
 			searching : this.searching,
+			pagingType : 'full_numbers',
 			scroller : this.scroller,
 			createdRow: function ( row, data, index ) {
 				if( type != 'report' )
@@ -148,6 +157,10 @@ class xlist{
 					});
 				
 				});
+				if( index > 30 )
+				{
+					$(row).hide();
+				}
 			 
 			},
 			headerCallback: function( thead, data, start, end, display ) {
@@ -288,6 +301,43 @@ class xlist{
 					});
 				} );
 				break;
+		}
+		
+			// var me = this;
+		// table.on( 'draw', function(){
+			// setTimeout(function(){
+				// me.rowshow(me );
+			// }, 500);
+		// });
+		$(this.id + ' .dataTables_scrollBody').on('scroll', function(e) {
+			let lignes = $( this.id + ' table.datatable tbody')[0].children;
+			let h = $(lignes[0]).height();
+			let v = e.target.scrollTop / ( h * lignes.length );
+			
+			let i = parseInt( lignes.length * v );
+			let m = i + 50;
+
+			for( let j = i; j < m; j++ ) {
+				if( lignes[j] ) {
+					$(lignes[j]).show();
+				}
+			}
+		});
+	}
+
+	rowshow(xlist){
+		let lignes = $( xlist.id + ' table.datatable tbody tr:hidden');
+		for( let j = 0; j < 100; j++ ) {
+			if( lignes[j] ) {
+				$(lignes[j]).show();
+			}
+		}
+		
+		if( lignes.length >= 100 )
+		{
+			setTimeout(function(){
+				xlist.rowshow( xlist );
+			}, 100);
 		}
 	}
 

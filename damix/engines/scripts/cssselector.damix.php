@@ -45,8 +45,14 @@ class CssSelector
     {
         $dirwww = \damix\core\urls\Url::getBasePath();
         $dir = implode( '/', $this->_part );
+		$unique = '';
+		$filename = $this->getTempPath();
+		if( file_exists( $filename ) )
+		{
+			$unique = filemtime( $filename );
+		}
         
-        return $dirwww . 'css/' . $dir . $this->_extensiontemp;
+        return $dirwww . 'css/' . $dir . $this->_extensiontemp . '?' . $unique;
     }
 
 }

@@ -24,6 +24,25 @@ class BasicErrorHandler
 		E_STRICT=>'strict'
 	);
 	
+	static $errorsActive = array( 
+		E_ERROR             => true,
+		E_WARNING           => false,
+		E_PARSE             => true,
+		E_NOTICE            => true,
+		E_CORE_ERROR        => true,
+		E_CORE_WARNING      => true,
+		E_COMPILE_ERROR     => true,
+		E_COMPILE_WARNING   => true,
+		E_USER_ERROR        => true,
+		E_USER_WARNING      => true,
+		E_USER_NOTICE       => true,
+		E_STRICT            => true,
+		E_RECOVERABLE_ERROR => true,
+		E_DEPRECATED        => true,
+		E_USER_DEPRECATED   => true,
+		E_ALL               => false,
+	);
+	
 	public static \damix\core\request\requestgeneric $request;
 	
 	public static function register(\damix\core\request\requestgeneric $request)
@@ -36,7 +55,7 @@ class BasicErrorHandler
 	
 	static function errorHandler(int $errno, string $errmsg, string $filename,int $linenum)
 	{
-		if(error_reporting()==0)
+		if(error_reporting(~E_ALL)==0)
 			return;
 		if(preg_match('/^\s*\((\d+)\)(.+)$/',$errmsg,$m)){
 			$code=$m[1];
@@ -60,6 +79,11 @@ class BasicErrorHandler
 	
 	private static function handleError(string $type, int $code, string $message, string $file, int $line, array $trace = array()) : void
 	{
+		
+		// if( !self::$errorsActive[$code] )
+		// {
+			// return;
+		// }
 		$message = new \damix\engines\logs\LogErrorMessage($type,$code,$message,$file,$line,$trace);			
 		\damix\engines\logs\log::dump($message, $type);
 		

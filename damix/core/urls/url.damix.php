@@ -45,11 +45,11 @@ class Url
         return $obj;
     }
 	
-	public static function getBasePath() : string
+	public static function getBasePath(bool $scriptname = false) : string
 	{
 		$c = \damix\engines\settings\Setting::get('default');
 		$basepath = $c->get( 'url', 'basepath' );
 		
-		return ( !empty($basepath) ? '/' . $basepath : '' ) . '/';
+		return ( !empty($basepath) ? '/' . $basepath : '' ) . '/' . ( $scriptname? $c->get( 'url', 'scriptname' ) : '' );
 	}
 }

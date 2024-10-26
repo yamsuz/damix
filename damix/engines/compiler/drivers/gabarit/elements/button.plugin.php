@@ -84,7 +84,7 @@ class GabaritElementButton
 			$attr->plugin = $driver->getPluginAttribute( $attr->name );
 			$a->appendAttributes( $attr );
 		}
-		$node->removeAttributes( 'name' );
+		// $node->removeAttributes( 'name' );
 		$node->removeAttributes( 'onclick' );
 		$node->removeAttributes( 'button' );
        

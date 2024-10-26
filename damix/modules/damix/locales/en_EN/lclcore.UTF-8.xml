@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<locales version="1.0">
+	<section name="core">
+		<locale name="core.period.du">du</locale>
+		<locale name="core.period.au">au</locale>
+		<locale name="core.bool.oui">yes</locale>
+		<locale name="core.bool.non">no</locale>
+		<locale name="core.menu.filter.export">Export</locale>
+	</section>
+	<section name="filter">
+		<locale name="filter.combo.null">Empty</locale>
+	</section>
+	<section name="datatable">
+		<locale name="datatable.aucunresultat">No result found.</locale>
+		<locale name="datatable.chargementencours">Loading ...</locale>
+		<locale name="datatable.totallignes">Total : _TOTAL_ result(s)</locale>
+		<locale name="datatable.lengthMenu">Number of entries _MENU_</locale>
+		<locale name="datatable.next">Next</locale>
+		<locale name="datatable.first">First</locale>
+		<locale name="datatable.last">Last</locale>
+		<locale name="datatable.previous">Previous</locale>
+	</section>
+	<section name="select2">
+		<locale name="select2.noresults">No result found.</locale>
+		<locale name="form.label.required"> (*)</locale>
+		<locale name="select2.searching">Loading ...</locale>
+		<locale name="select2.maximumSelected">You have reached the maximum number of selections.</locale>
+		<locale name="select2.loadingMore">Loading ...</locale>
+		<locale name="select2.inputTooShort">Please enter your search.</locale>
+		<locale name="select2.language">en</locale>
+	</section>
+
+</locales>

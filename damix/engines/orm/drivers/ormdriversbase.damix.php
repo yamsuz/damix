@@ -20,6 +20,7 @@ abstract class OrmDriversBase
 	private \damix\engines\orm\method\OrmMethodSelector $selector;
 	
 	abstract public function isSchema() : bool;
+	abstract public function isCaseManagement() : bool;
 	abstract protected function getRequestSQLCreateProcedureHeader(\damix\engines\orm\request\OrmRequestStored $stored) : string;
 	abstract protected function getRequestSQLCreateFunctionHeader(\damix\engines\orm\request\OrmRequestStored $stored) : string;
 	abstract protected function getRequestSQLCreateTriggerHeader(\damix\engines\orm\request\OrmRequestStored $stored) : string;
@@ -89,7 +90,6 @@ abstract class OrmDriversBase
 		
 		$this->selector = $selector;
         $_factory = $selector->getFactory();
-		// \damix\engines\logs\log::dump( $_factory );
         $this->request = $_factory->getRequestBase();
         $function = $selector->getPart( 'function' );
 		// \damix\engines\logs\log::dump( $_factory->getRequestBase() );
@@ -126,7 +126,7 @@ abstract class OrmDriversBase
 			$out[] = 'ORDER BY';
 			$out[] = $orderby;
 		}
-		$limit = $this->getLimit();
+		$limit = $this->getLimit( $_factory->getLimits($function));
 		if( ! empty( $limit ) )
 		{
 			$out[] = 'LIMIT';
@@ -192,8 +192,13 @@ abstract class OrmDriversBase
     {
 		$stored = $this->request;
 		
-		$schemaname = $stored->getSchema()?->getRealname();
+		$schemaname = '';
 		
+		if( $this->isSchema() )
+		{
+			$schemaname = $stored->getSchema()?->getRealname();
+		}
+				
 		return 'DROP PROCEDURE IF EXISTS ' . ($this->isSchema() && !empty($schemaname)? $this->getFieldProtector() . $schemaname . $this->getFieldProtector() . '.' : '' ) . $this->getFieldProtector() . $stored->getName() . $this->getFieldProtector() . $this->getDelimiter();
     }
 	
@@ -268,7 +273,12 @@ abstract class OrmDriversBase
     {
 		$stored = $this->request;
 		
-		$schemaname = $stored->getSchema()?->getRealname();
+		$schemaname = '';
+		
+		if( $this->isSchema() )
+		{
+			$schemaname = $stored->getSchema()?->getRealname();
+		}
 		
 		return 'DROP TRIGGER IF EXISTS ' . ($this->isSchema() && !empty($schemaname)? $this->getFieldProtector() . $schemaname . $this->getFieldProtector() . '.' : '' ) . $this->getFieldProtector() . $stored->getName() . $this->getFieldProtector() . $this->getDelimiter();
     }
@@ -319,7 +329,8 @@ abstract class OrmDriversBase
 			$out[] = 'ORDER BY';
 			$out[] = $orderby;
 		}
-		$limit = $this->getLimit();
+		
+		$limit = $this->getLimit($this->request->getLimits());
 		if( ! empty( $limit ) )
 		{
 			$out[] = 'LIMIT';
@@ -576,6 +587,10 @@ abstract class OrmDriversBase
 		}
 		
 		$out[] = 'SET';
+		if( count( $outvalue ) == 0)
+		{
+			return '';
+		}
 		$out[] = implode( ', ', $outvalue);
 		$out[] = 'WHERE';
 		$out[] = $this->getConditions( $conditions );
@@ -691,6 +706,15 @@ abstract class OrmDriversBase
 	{
 		if( is_string( $field ) )
 		{
+			if( $struct = \damix\engines\orm\Orm::getDefine( $field ))
+			{
+				$field = $struct['field'];
+
+				if( $field )
+				{
+					return $this->getFieldProtector() . $struct['orm']->realname . $this->getFieldProtector() . '.' . $this->getFieldProtector()  . $field['realname'] . $this->getFieldProtector() ;
+				}
+			}
 			return $this->getFieldProtector() . $field . $this->getFieldProtector();
 		}
 		elseif( is_array( $field ) )
@@ -723,12 +747,14 @@ abstract class OrmDriversBase
 			$out[] = ($field->getNull() ? 'NULL' : 'NOT NULL');
 			
 			$default = $field->getDefault();
-			
 			if( empty( $default ) )
 			{
-				if( $default == null )
+				if( $default === null )
 				{
-					$out[] = 'DEFAULT ' . $this->getValue( null );
+					if( $field->getNull() )
+					{
+						$out[] = 'DEFAULT ' . $this->getValue( null );
+					}
 				}
 				else
 				{
@@ -761,6 +787,11 @@ abstract class OrmDriversBase
 	{
 		$tablename = $table->getRealname();
 		$schemaname = $table->getSchema()?->getRealname();
+		
+		if( empty( $tablename) )
+		{
+			return '';
+		}
 		
 		if( $table->isInternal() )
 		{
@@ -1044,7 +1075,9 @@ abstract class OrmDriversBase
                     
 					if( $critere['operator'] != \damix\engines\orm\conditions\OrmOperator::ORM_OP_ISNULL )
 					{
-						$out[] = '\' . $conditions->getDataValue( \'' . $conditionname . '\', ' . $critere['number'] . ' ) . \'';
+						$sql = '\' . $conditions->getDataValue( \'' . $conditionname . '\', ' . $critere['number'] . ' ) . \'';
+						
+						$out[] = $sql;
 					}
 
                     break;
@@ -1053,8 +1086,12 @@ abstract class OrmDriversBase
             }
             $last = $critere['type'];
         }
-		// \damix\engines\logs\log::log( __LINE__ );
-		// \damix\engines\logs\log::dump( $out );
+		
+		if( $last === \damix\engines\orm\request\OrmPropertyType::ORM_TYPE_LOGIC )
+		{
+			array_pop( $out );
+		}
+		
 		
         if( count( $out ) == 0 )
         {
@@ -1064,8 +1101,59 @@ abstract class OrmDriversBase
         return implode( ' ', $out) ;
     }
 	
+	protected function getConditionCase(array $case) : ?\damix\engines\orm\request\structure\OrmFormula
+	{
+		if( $this->isCaseManagement() )
+		{
+			if( is_array( $case['property'] ) )
+			{
+				$name = $case['property']['name'] ?? $case['property']['field'];
+			}
+			else
+			{
+				$name = $case['property'];
+			}
+			
+			// \damix\engines\logs\log::dump( $case );
+			$ref = \damix\engines\orm\Orm::getDefine($name);
+			if( $ref )
+			{
+				$datatype = $ref['field']['datatype'];
+				
+				switch( \damix\engines\orm\request\structure\OrmDataType::cast( $datatype ) )
+				{
+					case \damix\engines\orm\request\structure\OrmDataType::ORM_CHAR:
+					case \damix\engines\orm\request\structure\OrmDataType::ORM_VARCHAR:
+					case \damix\engines\orm\request\structure\OrmDataType::ORM_TEXT:
+					case \damix\engines\orm\request\structure\OrmDataType::ORM_LONGTEXT:
+						
+						$params = array( 'type'=> 'property', 'table' => $ref['orm']->name , 'property' => $ref['field']['name'], 'ref' => $case['property'] );
+						
+						$formula = new \damix\engines\orm\request\structure\OrmFormula();
+						$formula->setName('upper');
+						$formula->addParameterArray( array( $params ) );
+						return $formula;
+				}
+				
+			}
+	
+		}
+		
+		return null;
+	}
+	
 	protected function getConditionLeft(array $condition) : string
 	{
+		
+		$formula = $this->getConditionCase( array( 'type' => 'ref', 'property' => $condition['left'] ));
+		
+		if( $formula )
+		{
+			$condition['left'] = $formula;
+			$condition['leftdatatype'] = \damix\engines\orm\request\OrmPropertyType::ORM_TYPE_FORMULA;
+			$condition['type'] =  \damix\engines\orm\request\OrmPropertyType::ORM_TYPE_FIELD;
+		}
+		
 		switch( $condition['leftdatatype'] )
 		{
 			case \damix\engines\orm\request\OrmPropertyType::ORM_TYPE_FIELD:
@@ -1092,6 +1180,7 @@ abstract class OrmDriversBase
 		{
 			return '';
 		}
+			
 		
 		switch( $condition['rightdatatype'] )
 		{
@@ -1151,9 +1240,8 @@ abstract class OrmDriversBase
         return implode( ', ', $out ) ;
     }
 	
-	private function getLimit()
+	private function getLimit(\damix\engines\orm\request\structure\OrmLimits $limits) : string
     {
-        $limits = $this->request->getLimits();
         $sql = '';
         if( $limits )
         {
@@ -1161,8 +1249,8 @@ abstract class OrmDriversBase
             $Offset = $limits->Offset;
             if( $RowCount > 0 )
             {
-                $sql = $RowCount;
-                if( $Offset > 0 )            
+                $sql = strval( $RowCount );
+                if( $Offset > 0 )
                 {
                     $sql .= ' OFFSET ' . $limits->Offset;
                 }
@@ -1175,8 +1263,6 @@ abstract class OrmDriversBase
     {
         $out = array();
 		
-		// \damix\engines\logs\log::dump( $this->request );
-		// \damix\engines\logs\log::dump( $orders );
 		foreach( $orders as $info )
 		{
 			$way = match( $info->getWay() )
@@ -1407,14 +1493,14 @@ abstract class OrmDriversBase
 	public function parseDatatypeTofield(\stdClass $property) : \damix\engines\orm\request\structure\OrmField
 	{
 		$field = new \damix\engines\orm\request\structure\OrmField();
-		$field->setName( $property->COLUMN_NAME );
-		$field->setNull( ($property->IS_NULLABLE === 'YES' ? true : false) );
-		$field->setAutoincrement( preg_match( '/auto_increment/', $property->EXTRA) ? true : false );
-		$field->setPrimaryKey( preg_match( '/PRI/', $property->COLUMN_KEY) ? true : false );
-		$field->setDefault( $property->COLUMN_DEFAULT );
-		$field->setUnsigned( preg_match( '/unsigned/', $property->COLUMN_TYPE) ? true : false );
+		$field->setName( $property->column_name );
+		$field->setNull( ($property->is_nullable === 'YES' ? true : false) );
+		$field->setAutoincrement( preg_match( '/auto_increment/', $property->extra) ? true : false );
+		$field->setPrimaryKey( preg_match( '/PRI/', $property->column_key) ? true : false );
+		$field->setDefault( $property->column_default );
+		$field->setUnsigned( preg_match( '/unsigned/', $property->column_type) ? true : false );
 		
-		$datatype = \damix\engines\orm\request\structure\OrmDataType::cast( $property->DATA_TYPE );
+		$datatype = \damix\engines\orm\request\structure\OrmDataType::cast( $property->data_type );
 		$field->setDatatype( $datatype );
 		switch( $datatype )
 		{
@@ -1440,14 +1526,14 @@ abstract class OrmDriversBase
 				break;
 			case \damix\engines\orm\request\structure\OrmDataType::ORM_CHAR:
 			case \damix\engines\orm\request\structure\OrmDataType::ORM_VARCHAR:
-				$field->setSize( intval($property->CHARACTER_MAXIMUM_LENGTH ));
+				$field->setSize( intval($property->character_maximum_length ));
 				break;
 			case \damix\engines\orm\request\structure\OrmDataType::ORM_DECIMAL:
-				$field->setSize( intval($property->CHARACTER_MAXIMUM_LENGTH ));
-				$field->setPrecision( intval($property->NUMERIC_PRECISION ));
+				$field->setSize( intval($property->character_maximum_length ));
+				$field->setPrecision( intval($property->numeric_precision ));
 				break;
 			case \damix\engines\orm\request\structure\OrmDataType::ORM_ENUM:
-				$enum = $property->COLUMN_TYPE;
+				$enum = $property->column_type;
 
 				if( preg_match( '/^enum\(\'(.*)\'\)$/', $enum, $out) )
 				{
@@ -1455,7 +1541,7 @@ abstract class OrmDriversBase
 				}
 				break;
 			default:
-				throw new \damix\core\exception\CoreException( 'Datatype not found : ' . $property->DATA_TYPE );
+				throw new \damix\core\exception\CoreException( 'Datatype not found : ' . $property->data_type );
 		}
 		
 		return $field;
@@ -1968,5 +2054,17 @@ abstract class OrmDriversBase
 		$c->addString( 'TABLE_NAME', \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, $ormtable->getRealname());
 
         return $request;
+	}
+
+	public function DataTypeCast( string $value ) : \damix\engines\orm\request\structure\OrmDataType
+	{
+		$datatype = \damix\engines\orm\request\structure\OrmDataType::tryFrom( $value );
+		
+		if( $datatype === null)
+		{
+			throw new \Exception( 'Datatype not found ' . $value );
+		}
+		
+		return $datatype;
 	}
 }

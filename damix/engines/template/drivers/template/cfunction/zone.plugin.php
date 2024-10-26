@@ -14,6 +14,6 @@ class TemplatesFunctionZone
 {
     public function Execute( string $args ) : string
     {
-        return '\damix\engines\zones\Zone::get( ' . $args . ');';
+        return 'print \damix\engines\zones\Zone::get( ' . $args . ');';
     }
 }

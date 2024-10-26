@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<compiler version="1.0" driver="boutons" >
+    <bouton ref="btn_enregistrer" name="btn_enregistrer" visible="1" acl="damix.datatable.configuration.enregistrer" onclick="datatablesave();" order="10"/>
+    <bouton ref="btn_enregistrer" name="btn_enregistrer" visible="1" acl="cmr.core.datatable.configuration.defaut" couleur="rouge1" onclick="datatabledefaut();" order="10"/>
+</compiler>

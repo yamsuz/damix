@@ -18,6 +18,7 @@ abstract class AuthBase
 	abstract public function userNew( string $login, string $password ) : bool;
 	abstract public function userDelete( string $login ) : bool;
 	abstract public function verifyPassword( string $login, string $password ) : bool;
+	abstract public function getDriverName() : string;
 	
 	public function __construct()
 	{
