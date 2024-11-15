@@ -226,7 +226,7 @@ class CommandAppcreate
 		$content[] = 'class welcomeZone';
 		$content[] = '	extends \damix\engines\zones\ZoneBase{';
 		$content[] = '';
-		$content[] = '	protected string $tplSelector = \'thinkpi~welcome\';';
+		$content[] = '	protected string $tplSelector = \'' . $this->application . '~welcome\';';
 		$content[] = '';
 		$content[] = '	protected function prepareTpl() : void {';
 		$content[] = '	}';
