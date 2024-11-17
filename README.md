@@ -1,3 +1,5 @@
+[![fr](https://img.shields.io/badge/lang-fr-red.svg)](https://github.com/yamsuz/damix/blob/master/README-FR.md)
+
 # Damix
 
 What is Damix?
