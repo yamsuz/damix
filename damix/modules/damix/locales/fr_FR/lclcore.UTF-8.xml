@@ -55,12 +55,12 @@
 		<locale name="datatable.previous">Précédent</locale>
 	</section>
 	<section name="select2">
-		<locale name="select2.noresults">Aucun résultat</locale>
 		<locale name="form.label.required"> (*)</locale>
 		<locale name="select2.searching">Recherche en cours ...</locale>
 		<locale name="select2.maximumSelected">Vous avez atteint le nombre maximum de sélection.</locale>
 		<locale name="select2.loadingMore">Chargement en cours ...</locale>
 		<locale name="select2.inputTooShort">Veuillez saisir votre recherche.</locale>
 		<locale name="select2.language">fr</locale>
+		<locale name="select2.noResults">Pas de résultat</locale>
 	</section>
 </locales>

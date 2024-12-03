@@ -21,13 +21,13 @@
 		<locale name="datatable.previous">Previous</locale>
 	</section>
 	<section name="select2">
-		<locale name="select2.noresults">No result found.</locale>
 		<locale name="form.label.required"> (*)</locale>
 		<locale name="select2.searching">Loading ...</locale>
 		<locale name="select2.maximumSelected">You have reached the maximum number of selections.</locale>
 		<locale name="select2.loadingMore">Loading ...</locale>
 		<locale name="select2.inputTooShort">Please enter your search.</locale>
 		<locale name="select2.language">en</locale>
+		<locale name="select2.noResults">No result found.</locale>
 	</section>
 
 </locales>

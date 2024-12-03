@@ -45,10 +45,10 @@ function pageload( type )
 					language: 
 					{
 						noResults: function(){
-							return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.aucunresultat' ); ?>';
+							return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.noResults' ); ?>';
 						},
 						searching: function(){
-							return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.rechercheencours' ); ?>';
+							return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.searching' ); ?>';
 						}
 					},
 					width: 'style' 
@@ -62,13 +62,13 @@ function pageload( type )
                     language:
 					{
                         noResults: function(){
-                            return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.aucunresultat' ); ?>';
+                            return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.noResults' ); ?>';
                         },
 						searching: function(){
-							return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.rechercheencours' ); ?>';
+							return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.searching' ); ?>';
 						},
 						maximumSelected: function(){
-							return "<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.nombreselectionmax' ); ?>";
+							return "<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.maximumSelected' ); ?>";
 						}
                     },
 					width: 'style' 
@@ -126,10 +126,10 @@ function pageload( type )
 					language:
 					{
 						noResults: function(){
-							return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.aucunresultat' ); ?>';
+							return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.noResults' ); ?>';
 						},
 						searching: function(){
-							return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.rechercheencours' ); ?>';
+							return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.searching' ); ?>';
 						}
 					},
 					dropdownParent: $( '.ui-dialog' ),
@@ -144,13 +144,13 @@ function pageload( type )
                     language:
 					{
                         noResults: function(){
-                            return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.aucunresultat' ); ?>';
+                            return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.noResults' ); ?>';
                         },
 						searching: function(){
-							return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.rechercheencours' ); ?>';
+							return '<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.searching' ); ?>';
 						},
 						maximumSelected: function(){
-							return "<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.nombreselectionmax' ); ?>";
+							return "<?php echo \damix\engines\locales\Locale::get( 'damix~lclcore.select2.maximumSelected' ); ?>";
 						}
                     },
                     dropdownParent: $( '.ui-dialog' ),
