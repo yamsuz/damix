@@ -61,7 +61,7 @@ function help()
 	print "  " . "-a [application] -e pagecreate -m [nomModule] -c [nom] : Creation d'une page" . "\r\n";
 	print "  " . "-a [application] -e templatecreate -m [nomModule] -c [nomZone] : Creation d'un template" . "\r\n";
 	print "  " . "-a [application] -e zonecreate -m [nomModule] -c [nomZone] : Creation d'une zone" . "\r\n";
-	print "  " . "-a [application] -e controllercreate -m [nomModule] -c [nomController] : Creation d'un controller" . "\r\n";
+	print "  " . "-a [application] -e classcreate -m [nomModule] -c [nomClasse] : Creation d'une classe" . "\r\n";
 	print "  " . "-h" . "\t" . "Cette aide" . "\r\n";
 }
 
