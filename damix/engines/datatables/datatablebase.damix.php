@@ -179,7 +179,7 @@ class DatatableBase
 	{
 		$result = [];
 		foreach ($fields as $field) {
-			$result[] = $enclosure . str_replace($enclosure, $escape_char . $enclosure, $field ?? '') . $enclosure;
+			$result[] = $enclosure . str_replace($enclosure, $escape_char . $enclosure, strval($field ?? '')) . $enclosure;
 		}
 		return fwrite($handle, implode($delimiter, $result) . $record_seperator) > 0;
 	}
