@@ -90,6 +90,8 @@ class CommandAppcreate
 		$this->createapplicationinit();
 		$this->createControllerWelcome();
 		$this->createZoneWelcome();
+		$this->createTemplateWelcome();
+		$this->createTemplateHome();
 		$this->createapplicationevent();
 		$this->createapplicationacl();
 	}
@@ -233,6 +235,28 @@ class CommandAppcreate
 		$content[] = '}';
 		
 		$filename = $this->directory . $this->application . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $this->application . DIRECTORY_SEPARATOR . 'zones' . DIRECTORY_SEPARATOR . 'welcome.class.php';
+		
+		file_put_contents($filename, implode( "\r\n", $content ));
+	}
+	
+	private function createTemplateWelcome()
+	{
+		$content = array();
+		
+		$content[] = '{$MAIN}';
+		
+		$filename = $this->directory . $this->application . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $this->application . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'welcome.tpl';
+		
+		file_put_contents($filename, implode( "\r\n", $content ));
+	}
+	
+	private function createTemplateHome()
+	{
+		$content = array();
+		
+		$content[] = 'Hello World';
+		
+		$filename = $this->directory . $this->application . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $this->application . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'home.tpl';
 		
 		file_put_contents($filename, implode( "\r\n", $content ));
 	}
