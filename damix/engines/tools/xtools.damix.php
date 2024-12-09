@@ -14,6 +14,7 @@ class xTools
 	{
 		$sessionname = \damix\engines\settings\Setting::getValue('default', 'auth', 'sessionname');
 		
+		
 		return $_SESSION[$sessionname]->login ?? '';
 	}
 	

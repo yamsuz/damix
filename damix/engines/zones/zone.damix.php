@@ -35,7 +35,10 @@ class Zone
 		{
 			require_once( $filename );
 		}
-		
+		else
+		{
+			throw new \damix\core\exception\CoreException('Le fichier de la zone n\'existe pas ' . $filename);
+		}
         
 		// if( ! class_exists($classname,false ) )
         // {

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <setting version="1.0">
 	<section name="general">
-		<config name="startmodule" value="bapteme"/>
-		<config name="startaction" value="ctrinscriptionliste:index"/>
+		<config name="startmodule" value=""/>
+		<config name="startaction" value=""/>
 		<config name="langue" value="fr_FR"/>
 		<config name="charset" value="UTF-8"/>
 	</section>
@@ -14,7 +14,7 @@
 	</section>
 	<section name="url">
 		<config name="engines" value="basic"/>
-		<config name="basepath" value="damix"/>
+		<config name="basepath" value=""/>
 		<config name="scriptname" value="index.php"/>
 	</section>
 	<section name="log">
@@ -26,7 +26,15 @@
 		<config name="error" value="error.log"/>
 	</section>
 	<section name="response">
+		<config name="htmlauth" value="classic~myhtmlauthresponse"/>
 		<config name="html" value="classic~myhtmlresponse"/>
+		<config name="redirecturl" value="classic~myurlresponse"/>
+		<config name="json" value="classic~myjsonresponse"/>
+		<config name="binary" value="classic~mybinaryresponse"/>
+		<config name="csv" value="classic~mycsvresponse"/>
+		<config name="redirect" value="classic~myredirectresponse"/>
+		<config name="text" value="classic~mytextresponse"/>
+		<config name="jhjc" value="classic~myjhjcresponse"/>
 	</section>
 	<section name="session">
 		<config name="driver" value="file"/>

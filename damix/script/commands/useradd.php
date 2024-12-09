@@ -18,6 +18,18 @@ class CommandUseradd
 		$password = $params['p'] ?? null;
 		$driver = $params['d'] ?? null;
 		
+		if( $login === null )
+		{
+			self::display( 'Le login est obligatoire.');
+			return;
+		}
+		
+		if( $password === null )
+		{
+			self::display( 'Le mot de passe est obligatoire.');
+			return;
+		}
+		
 		
 		$auths = \damix\engines\authentificate\Auth::get( );
 		if( $auths->count() > 1) 
@@ -27,6 +39,8 @@ class CommandUseradd
 				self::display( 'Le nom du driver est obligatoire.');
 				return;
 			}
+			
+			
 			
 			foreach( $auths as $auth )
 			{

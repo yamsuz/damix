@@ -90,8 +90,15 @@ class Orm
 		if( preg_match( '/[{\[]([a-z0-9A-Z_]*)[}\]]:([a-z0-9A-Z_]*)/', $value, $out ) )
         {
             $define = \damix\engines\orm\defines\OrmDefines::get();
-
-            $orm = \damix\engines\orm\Orm::getStructure( $define->get( $out[1] ) );
+			
+			$sel = $define->get( $out[1] );
+			
+			if( $sel === null )
+			{
+				throw new \damix\core\exception\CoreException( 'Le sélecteur ' . $out[1] . ' n\'existe pas' );
+			}
+			
+            $orm = \damix\engines\orm\Orm::getStructure( $sel );
             
             $field = $orm->getProperty( $out[2] );
             

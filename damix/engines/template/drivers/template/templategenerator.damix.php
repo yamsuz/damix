@@ -97,6 +97,11 @@ class TemplateGenerator
 			
 			return true;
 		}
+		else
+		{
+			throw new \damix\core\exception\CoreException('Le fichier du template n\'existe pas ' . $this->_sourceFile);
+		}
+		
 		return false;
     }
 	

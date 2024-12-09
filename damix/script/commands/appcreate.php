@@ -61,26 +61,16 @@ class CommandAppcreate
 		self::copy( $this->dirtemplate . DIRECTORY_SEPARATOR . 'configuration' . DIRECTORY_SEPARATOR . 'javascript', $racine . DIRECTORY_SEPARATOR . 'configuration' . DIRECTORY_SEPARATOR . 'javascript' );
 		
 		$filename = $racine . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'default.cfg.xml';
-		$dom = new \DOMDocument();
-		$dom->preserveWhiteSpace = false;
+		$dom = new \damix\engines\tools\xmlDocument();
 		$dom->load( $filename );
 		
+		$section = $dom->xPath( '/setting/section[@name="general"]' )->item(0);		
+		$this->noteadd( $dom, $section, 'config', array( 'name' => 'startmodule', 'value' => $this->application ));
+		$this->noteadd( $dom, $section, 'config', array( 'name' => 'startaction', 'value' => 'welcome' ));
+
+		$url = $dom->xPath( '/setting/section[@name="url"]' )->item(0);	
+		$this->noteadd( $dom, $url, 'config', array( 'name' => 'basepath', 'value' => $this->application ));
 		
-		$xpath = new \DOMXpath( $dom );
-		$section = $xpath->query( '//section[@name="general"]' )->item(0);
-		foreach( $section->childNodes as $config )
-		{
-			switch( $config->getAttribute( 'name' ) )
-			{
-				case 'startmodule':
-					$config->setAttribute( 'value', $this->application );
-					break;
-				case 'startaction':
-					$config->setAttribute( 'value', 'welcome' );
-					break;
-			}
-		}
-		$dom->formatOutput = true;
         $xml = $dom->save($filename);
 		
 		
@@ -94,6 +84,26 @@ class CommandAppcreate
 		$this->createTemplateHome();
 		$this->createapplicationevent();
 		$this->createapplicationacl();
+		$this->createormdefine();
+	}
+	
+	private function noteadd( \damix\engines\tools\xmlDocument $dom, \DOMNode $parent, string $name, array $attribute) : \DOMNode
+	{
+		
+		$node = $dom->xPath( $name . '[@name="'. $attribute['name'] . '"]', $parent )->item(0);
+		if( ! $node )
+		{
+			$node = $dom->addElement( $name, $parent, $attribute );
+		}
+		else
+		{
+			foreach( $attribute as $attrname => $attrvalue )
+			{
+				$dom->setAttribute( $node, $attrname, $attrvalue );
+			}
+		}
+		
+		return $node;
 	}
 	
 	public static function createDir(string $dir) : bool
@@ -136,6 +146,17 @@ class CommandAppcreate
             copy($source, $destination);
         }
 	}
+	private function createormdefine()
+	{
+		$filename = $this->directory . $this->application . DIRECTORY_SEPARATOR . 'configuration' . DIRECTORY_SEPARATOR . 'ormdefines' . DIRECTORY_SEPARATOR . 'ormdefines.xml';
+		$dom = \damix\engines\tools\xmlDocument::createDocument('defines');
+		$dom->preserveWhiteSpace = false;
+		$node = $dom->firstChild;
+		$dom->setAttribute( $node, 'version', '1.0');
+		$dom->formatOutput = true;
+        $xml = $dom->save($filename);
+
+	}
 	private function createapplicationevent()
 	{
 		$filename = $this->directory . $this->application . DIRECTORY_SEPARATOR . 'events.evt.xml';
@@ -154,7 +175,6 @@ class CommandAppcreate
 		$dom->preserveWhiteSpace = false;
 		$dom->formatOutput = true;
         $xml = $dom->save($filename);
-
 	}
 	
 	private function createapplicationinit()
@@ -243,7 +263,7 @@ class CommandAppcreate
 	{
 		$content = array();
 		
-		$content[] = '{$MAIN}';
+		$content[] = 'Hello World';
 		
 		$filename = $this->directory . $this->application . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $this->application . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'welcome.tpl';
 		
@@ -254,7 +274,7 @@ class CommandAppcreate
 	{
 		$content = array();
 		
-		$content[] = 'Hello World';
+		$content[] = '{$MAIN}';
 		
 		$filename = $this->directory . $this->application . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . $this->application . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'home.tpl';
 		

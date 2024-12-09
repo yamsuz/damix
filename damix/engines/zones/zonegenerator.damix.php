@@ -12,6 +12,13 @@ class ZoneGenerator
 {
 	public function generate( ZoneSelector $selector ) : bool
     {
+		$this->_sourceFile = $selector->getFileDefault();
+		
+		if( !file_exists( $this->_sourceFile ) )
+		{
+			throw new \damix\core\exception\CoreException('Le fichier de la zone n\'existe pas ' . $this->_sourceFile);
+		}
+		
 		return true;
     }
 	

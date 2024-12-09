@@ -30,6 +30,10 @@ class CommandActivateauth
 		$setting = $dom->xPath( '/setting' )->item(0);
 		if( $setting )
 		{
+			$plugins = $this->noteadd( $dom, $setting, 'section', array( 'name' => 'plugins' ));
+			$this->noteadd( $dom, $plugins, 'config', array( 'value' => 'auth'));
+			$this->noteadd( $dom, $plugins, 'config', array( 'value' => 'acl'));
+			
 			$section = $this->noteadd( $dom, $setting, 'section', array( 'name' => 'auth' ));
 			$this->noteadd( $dom, $section, 'config', array( 'name' => 'driver', 'value' => $driver));
 			$this->noteadd( $dom, $section, 'config', array( 'name' => 'sessionname', 'value' => 'DAMIX_USER'));
@@ -52,7 +56,6 @@ class CommandActivateauth
 				}
 			}
 
-			
 			$section = $this->noteadd( $dom, $setting, 'section', array( 'name' => 'acl' ));
 			$this->noteadd( $dom, $section, 'config', array( 'name' => 'driver', 'value' => 'db'));
 			$this->noteadd( $dom, $section, 'config', array( 'name' => 'profile', 'value' => ''));
@@ -61,7 +64,7 @@ class CommandActivateauth
 			$this->noteadd( $dom, $section, 'config', array( 'name' => 'ormusersgroups', 'value' => 'auth~tormaclusersgroups'));
 			$this->noteadd( $dom, $section, 'config', array( 'name' => 'ormgroups', 'value' => 'auth~tormaclgroups'));
 			$this->noteadd( $dom, $section, 'config', array( 'name' => 'sormaclsright', 'value' => 'auth~sormaclsright'));
-
+			
 			$dom->save( $filename );
 		}
 		
@@ -92,11 +95,23 @@ class CommandActivateauth
 	
 	private function noteadd( \damix\engines\tools\xmlDocument $dom, \DOMNode $parent, string $name, array $attribute) : \DOMNode
 	{
-		
-		$node = $dom->xPath( $name . '[@name="'. $attribute['name'] . '"]', $parent )->item(0);
+		$query = '';
+		foreach( $attribute as $attrname => $attrvalue )
+		{
+			$query .= '[@'.$attrname.'="'. $attrvalue . '"]';
+		}
+
+		$node = $dom->xPath( $name . $query, $parent )->item(0);
 		if( ! $node )
 		{
 			$node = $dom->addElement( $name, $parent, $attribute);
+		}
+		else
+		{
+			foreach( $attribute as $attrname => $attrvalue )
+			{
+				$dom->setAttribute( $node, $attrname, $attrvalue );
+			}
 		}
 		
 		return $node;
