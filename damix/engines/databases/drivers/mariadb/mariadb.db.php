@@ -18,9 +18,17 @@ class MariadbDbConnection
 	
 	protected function _connect() : bool
 	{
-		$this->cnx = @new \mysqli($this->host, $this->user, $this->password, $this->database, $this->port);
-		
-		$this->cnx->set_charset( $this->charset );
+		try
+		{
+			$this->cnx = @new \mysqli($this->host, $this->user, $this->password, $this->database, $this->port);
+			
+			$this->cnx->set_charset( $this->charset );
+		}
+		catch(\Exception $e)
+		{
+			\damix\engines\logs\log::log( $e->getMessage(), 'error' );
+			throw new \damix\core\exception\CoreException( 'La connexion a la base de données est impossible.' );
+		}
 		
 		return true;
 	}

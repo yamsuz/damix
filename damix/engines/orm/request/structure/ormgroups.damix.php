@@ -12,7 +12,7 @@ namespace damix\engines\orm\request\structure;
 class OrmGroups
     implements \Iterator
 {
-    private array $_orders = array();
+    private array $_groups = array();
     private int $_position = 0;
     
     public function __construct() 
@@ -27,7 +27,7 @@ class OrmGroups
 
     public function current() : OrmGroup 
 	{
-        return $this->_orders[$this->_position];
+        return $this->_groups[$this->_position];
     }
 
     public function key() : int 
@@ -42,21 +42,31 @@ class OrmGroups
 
     public function valid() : bool
 	{
-        return isset($this->_orders[$this->_position]);
+        return isset($this->_groups[$this->_position]);
     }
     
     public function getHashData() : array
     {
-        return $this->_orders;
+        return $this->_groups;
+    }
+    
+    public function getGroups() : array
+    {
+        return $this->_groups;
     }
     
     public function clear() : void
     {
-        $this->_orders = array();
+        $this->_groups = array();
     }
     
     public function add( OrmGroup $property ) : void
     {
-        $this->_orders[] = $property;
+        $this->_groups[] = $property;
+    }
+    
+    public function merge( OrmGroups $groups ) : void
+    {
+        $this->_groups = array_merge($this->_groups, $groups->getGroups());
     }
 }

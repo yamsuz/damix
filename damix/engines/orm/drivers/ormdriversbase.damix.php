@@ -108,7 +108,7 @@ abstract class OrmDriversBase
 			$out[] = 'WHERE';
 			$out[] = $where;
 		}
-		$groupby = $this->getGroups();
+		$groupby = $this->getGroups( $_factory->getGroups( $function ));
 		if( ! empty( $groupby ) )
 		{
 			$out[] = 'GROUP BY';
@@ -311,7 +311,7 @@ abstract class OrmDriversBase
 			$out[] = 'WHERE';
 			$out[] = $where;
 		}
-		$groupby = $this->getGroups();
+		$groupby = $this->getGroups(null);
 		if( ! empty( $groupby ) )
 		{
 			$out[] = 'GROUP BY';
@@ -1211,11 +1211,16 @@ abstract class OrmDriversBase
 		throw new \damix\core\exception\OrmException( 'Type de data non géré : ' . __FILE__ . ' ' . __LINE__ );
 	}
 	
-	private function getGroups() : string
+	private function getGroups(?\damix\engines\orm\request\structure\OrmGroups $groupby) : string
     {
         $out = array();
 		
-        $groups = $this->request->getGroupBy();
+		$groups = $this->request->getGroupBy();
+		
+		if( $groupby !== null )
+		{
+			$groups->merge( $groupby );
+		}
 		
 		foreach( $groups as $info )
 		{
