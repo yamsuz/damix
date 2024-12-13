@@ -21,33 +21,34 @@ class GabaritBase
     public function check( array $params, array &$out ) : bool
     {
         $error = false;
-        // foreach( $this->_properties as $name => $value )
-        // {
-            // $required = $value['required'] ?? false;
-            // $expr = $value['expr'] ?? false;
+        foreach( $this->_properties as $name => $value )
+        {
+            $required = $value['required'] ?? false;
+            $expr = $value['expr'] ?? false;
             
-            // if( $required )
-            // {
-                // if( isset( $params[ $name ] ) )
-                // {
-                    // if( $params[ $name ] == '' )
-                    // {
-                        // $orm = \orm\Orm::getStructureDefine( $value['ref']['orm'] );
-                        // if( $orm )
-                        // {
-                            // $locale = \jLocale::get( $orm->module . '~lclerreur.required.' . $orm->name . '.' . $value['ref']['property'] );
-                        // }
+            if( $required )
+            {
+                if( isset( $params[ $name ] ) )
+                {
+                    if( $params[ $name ] == '' )
+                    {
+                        $orm = \damix\engines\orm\Orm::getStructure( $value['ref']['orm'] );
+
+                        if( $orm )
+                        {
+                            $locale = \damix\engines\locales\Locale::get( $orm->selector->getPart('module') . '~lclerror.required.' . $orm->name . '.' . $value['ref']['property'] );
+                        }
                         
-                        // $out[] = array(
-                            // 'locale' => $locale,
-                            // 'property' => $name,
-                        // );
-                        // $error = true;
-                    // }
+                        $out[] = array(
+                            'locale' => $locale,
+                            'property' => $name,
+                        );
+                        $error = true;
+                    }
                     
-                // }
-            // }
-        // }
+                }
+            }
+        }
         
         return !$error;
     }

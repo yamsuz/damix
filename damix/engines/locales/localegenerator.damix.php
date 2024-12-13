@@ -39,12 +39,12 @@ class LocaleGenerator
             $this->writecontent();
 			$this->writeLine( '}' );
 			
-			
-            
             \damix\engines\tools\xfile::write( $selector->getTempPath(), $this->getText() );
             return true;
         }
-		\damix\engines\logs\log::dump( $selector );
+		
+		throw new \damix\core\exception\CoreException('Le fichier de la locale n\'existe pas ' . $selector->getFileDefault());
+
 		return false;
     }
     
