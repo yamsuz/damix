@@ -126,8 +126,11 @@ class DbAcl
 	
 	public function addusergroup(string $login, string $group) : void
 	{
+		
+		$this->addgroup( $group, $group );
+		
 		$c = $this->ormusersgroups->getConditionsClear('select');
-		$c->addString( '{ORM_USERS_GROUPS}:codelogin', \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, $login );
+		$c->addString( '{ORM_USERS_GROUPS}:login', \damix\engines\orm\conditions\OrmOperator::ORM_OP_EQ, $login );
 		$liste = $this->ormusersgroups->select();
 		
 		if( $liste->rowcount() == 0 )

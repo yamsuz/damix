@@ -21,7 +21,7 @@ function my_autoload_register($class) {
 
 spl_autoload_register('my_autoload_register');
 
-$short_options = "a:e:m:c:d:u:p:o:r:f:k:h";
+$short_options = "a:e:m:c:d:u:g:p:o:r:f:k:h";
 $long_options = [];
 
 
@@ -62,6 +62,7 @@ function help()
 	print "  " . "-a [application] -e templatecreate -m [nomModule] -c [nomZone] : Creation d'un template" . "\r\n";
 	print "  " . "-a [application] -e zonecreate -m [nomModule] -c [nomZone] : Creation d'une zone" . "\r\n";
 	print "  " . "-a [application] -e classcreate -m [nomModule] -c [nomClasse] : Creation d'une classe" . "\r\n";
+	print "  " . "-a [application] -e usergroupadd -u [login] -g [group] : Association d'un login a un group" . "\r\n";
 	print "  " . "-h" . "\t" . "Cette aide" . "\r\n";
 }
 

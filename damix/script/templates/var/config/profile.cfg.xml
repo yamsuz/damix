@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<setting version="1.0">
+	<section name="database">
+		<config name="default" value="myprofil"/>
+	</section>
+	
+	<section name="myprofil">
+		<config name="driver" value="mariadb"/>
+		<config name="database" value="mydatabase1"/>
+		<config name="host" value="localhost"/>
+		<config name="port" value="3306"/>
+		<config name="user" value="root"/>
+		<config name="password" value=""/>
+		<config name="persistent" value="on"/>
+		<config name="force_encoding" value="on"/>
+		<config name="charset" value="UTF8"/>
+		<config name="engine" value="InnoDB"/>
+		<config name="schema" value="public"/>
+	</section>
+	
+	<section name="myprofil2">
+		<config name="driver" value="mariadb"/>
+		<config name="database" value="mydatabase2"/>
+		<config name="host" value="localhost"/>
+		<config name="port" value="3306"/>
+		<config name="user" value="root"/>
+		<config name="password" value=""/>
+		<config name="persistent" value="on"/>
+		<config name="force_encoding" value="on"/>
+		<config name="charset" value="UTF8"/>
+		<config name="engine" value="InnoDB"/>
+		<config name="schema" value="public"/>
+	</section>
+	
+</setting>
