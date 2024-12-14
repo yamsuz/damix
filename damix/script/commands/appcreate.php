@@ -85,6 +85,7 @@ class CommandAppcreate
 		$this->createapplicationevent();
 		$this->createapplicationacl();
 		$this->createormdefine();
+		$this->createiconfont();
 	}
 	
 	private function noteadd( \damix\engines\tools\xmlDocument $dom, \DOMNode $parent, string $name, array $attribute) : \DOMNode
@@ -155,7 +156,17 @@ class CommandAppcreate
 		$dom->setAttribute( $node, 'version', '1.0');
 		$dom->formatOutput = true;
         $xml = $dom->save($filename);
-
+	}
+	
+	private function createiconfont()
+	{
+		$filename = $this->directory . $this->application . DIRECTORY_SEPARATOR . 'configuration' . DIRECTORY_SEPARATOR . 'iconfont' . DIRECTORY_SEPARATOR . 'default.xml';
+		$dom = \damix\engines\tools\xmlDocument::createDocument('iconfont');
+		$dom->preserveWhiteSpace = false;
+		$node = $dom->firstChild;
+		$dom->setAttribute( $node, 'version', '1.0');
+		$dom->formatOutput = true;
+        $xml = $dom->save($filename);
 	}
 	private function createapplicationevent()
 	{

@@ -53,4 +53,13 @@ class Locale
 	{
 		return self::get( $selector . '.' . $enum, $params);
 	}
+	
+	public static function isLocale( string $selector ) : bool
+	{
+		if( preg_match('/[\w]*~[\w]*\.[\w\.]*/', $selector ) )
+		{
+			return true;
+		}
+		return false;
+	}
 }

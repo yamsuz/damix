@@ -3,6 +3,9 @@
 	<section name="core">
 		<locale name="core.template.tag.function.invalid">(301)Dans le template %2$s la syntaxe de la fonction %1$s est invalide</locale>
 		<locale name="core.locale.compilation.invalid">La compilation des locales %1$s est impossible.</locale>
+		<locale name="core.response.template.not.exist">No one template is setting in the response.</locale>
 	</section>
-	 
+	 <section name="engines">
+		<locale name="engines.datatable.generator.orm.exist">The setting of orm doesn't exist in the datatable.</locale>
+	</section>
 </locales>

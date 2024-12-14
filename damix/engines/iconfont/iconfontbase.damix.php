@@ -17,10 +17,16 @@ class IconFontBase
     {
     }
     
-    public function getHtml( $name )
+    public function getHtml( $name ) : string
     {
+		
+		if( ! isset( $this->_icon[$name] ) )
+		{
+			return '';
+		}
+		
         $icon = $this->_icon[$name];
-
+		
         if ($icon['class'] == 'xbutton_filter'){
             $html = '<i class="damix-dt_btn-filter-small '. $icon['fontclass'] .' '. $icon['class'] .' xbutton_'. $icon['name'] .' "></i>';
         }

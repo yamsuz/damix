@@ -14,6 +14,11 @@ abstract class DamixException
 {
 	public function __construct(string $message = "", int $code = 0)
 	{
+		
+		if( \damix\engines\locales\Locale::isLocale( $message ) )
+		{
+			$message = \damix\engines\locales\Locale::get( $message );
+		}
 		parent::__construct($message, $code);
 	}
 }

@@ -12,7 +12,7 @@ class ResponseBaseHtml
 	extends ResponseBase
 {
 	protected string $_bodyTpl = '';
-	public \damix\engines\template\Template $Tpl ;
+	public ?\damix\engines\template\Template $Tpl = null;
 	protected array $linkJS = array();
 	protected array $linkCSS = array();
 	public string $htmlversion = 'HTML5';

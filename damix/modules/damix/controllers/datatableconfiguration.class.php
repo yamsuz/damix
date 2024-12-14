@@ -19,8 +19,12 @@ class datatableconfiguration
 
         $selector = $this->getParamString( 's' );
         
-        // $rep->addJSLink( xjavascript\xJavascript::link( 'jquery~jquery.tablednd' ) );
-        
+		if( $rep->Tpl === null )
+		{
+			throw new \damix\core\exception\CoreException('damix~lclerrors.core.response.template.not.exist');
+
+		}
+		
         $rep->Tpl->assignZone( 'MAIN', 'damix~zondatatableconfiguration', array( 'selector' => $selector ) );
         return $rep;
     }
@@ -50,7 +54,11 @@ class datatableconfiguration
             {
                 $table[ $name ][ 'locale' ] = $prop[ 'locale' ];
                 $table[ $name ][ 'datatype' ] = $prop[ 'datatype' ];
-                $table[ $name ][ 'header' ] = \damix\engines\locales\Locale::get( $prop[ 'locale' ] );
+				if( \damix\engines\locales\Locale::isLocale( $prop[ 'locale' ] ) ) 
+				{
+					$table[ $name ][ 'header' ] = \damix\engines\locales\Locale::get( $prop[ 'locale' ] );
+				}
+				
 				if( $table[ $name ]['visible' ] )
 				{
 					$list[ 'visible' ][$name] = $table[ $name ];

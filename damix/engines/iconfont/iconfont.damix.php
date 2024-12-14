@@ -13,7 +13,7 @@ class IconFont
 {
     static protected $_singleton=null;
     
-    public static function get()
+    public static function get() : IconFontBase
     {
         $sel = new IconFontSelector();
  
@@ -29,7 +29,7 @@ class IconFont
         return $icon->getHtml( $name );
     }
 
-    public static function create( $selector = '' )
+    public static function create( $selector = '' ) : IconFontBase
     {
         if( is_string( $selector ) )
         {

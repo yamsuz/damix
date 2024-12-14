@@ -346,10 +346,11 @@ class Datatable
 					$column = $dom->addElement( 'column', $columns );
 				}
              
+				
                 $column->setAttribute( 'ref', $data['ref']);
                 $column->setAttribute( 'name', $data['field']);
                 $column->setAttribute( 'header', $data['header']);
-                $column->setAttribute( 'datatype', $data['datatype']);
+                $column->setAttribute( 'datatype', ( ! empty($data['datatype']) ? $data['datatype'] :  'varchar'));
                 $column->setAttribute( 'order', $data['order']);
                 $column->setAttribute( 'from', $data['from']);
                 $column->setAttribute( 'sort', $data['sort']);

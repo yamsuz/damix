@@ -221,6 +221,11 @@ class DatatableGenerator
 		$dom = $this->_document;
         $orm = $dom->xPath( '/datatables/orm' )->item(0);
 
+		if( $orm === null )
+		{
+			throw new \damix\core\exception\CoreException('damix~lclerrors.engines.datatable.generator.orm.exist');
+		}
+		
 		$this->orm = \damix\engines\orm\method\OrmMethod::get( $orm->getAttribute( 'selector' ) );
 		$sel = new \damix\engines\orm\OrmSelector( $orm->getAttribute( 'selector' ) );
 		
