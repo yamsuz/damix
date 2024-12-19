@@ -321,10 +321,10 @@ class DatatableGenerator
 			$enumerate = '';
 			$format = '';
             $from = $this->_document->getAttribute( $filter, 'from' );
+			$ref = $this->_document->getAttribute( $filter, 'ref' );
+			
 			if( $from === 'orm' )
 			{
-				$ref = $this->_document->getAttribute( $filter, 'ref' );
-			
 				if( $struct = \damix\engines\orm\Orm::getDefine( $ref ))
 				{
 					$orm = $struct['orm'];
@@ -378,6 +378,7 @@ class DatatableGenerator
 			$content = array();
 			$content[] = '$this->filters[ \'' . $this->name .'\' ][ '. $this->quote( $name ) .' ] = array(';
 			
+			$content[] = '\'ref\' => '. $this->quote( $ref ) .', ';
 			$content[] = '\'name\' => '. $this->quote( $name ) .', ';
 			$content[] = '\'header\' => '. $this->quote( $header ) .', ';
 			$content[] = '\'locale\' => '. $this->quote( $locale ) .', ';

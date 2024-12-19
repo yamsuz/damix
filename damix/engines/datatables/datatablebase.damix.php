@@ -492,7 +492,12 @@ class DatatableBase
                 if( count( $filters ) > 0 && isset( $this->filters[$name] ))
                 {
                     $property = $this->filters[$name][$field];
-					$field = $property['field'];
+					
+					$field = array( 
+						'ref' => $property['ref'],
+						'table' => $property['table'],
+						'field' => $property['field']
+						);
                     switch( $property['datatype'] )
                     {
                         case 'date':

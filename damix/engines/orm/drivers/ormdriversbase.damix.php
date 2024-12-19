@@ -1134,7 +1134,27 @@ abstract class OrmDriversBase
 						$formula->addParameterArray( array( $params ) );
 						return $formula;
 				}
+			}
+			else
+			{
 				
+				if( is_array( $case['property'] ) )
+				{
+					$table = $case['property']['table'];
+					$field = $case['property']['field'];
+				}
+				else
+				{
+					$table = '';
+					$field = $case['property'];
+				}
+				
+				$params = array( 'type'=> 'property', 'table' => $table, 'property' => $field, 'ref' => '' );
+						
+				$formula = new \damix\engines\orm\request\structure\OrmFormula();
+				$formula->setName('upper');
+				$formula->addParameterArray( array( $params ) );
+				return $formula;
 			}
 	
 		}
@@ -1180,7 +1200,15 @@ abstract class OrmDriversBase
 		{
 			return '';
 		}
-			
+		
+		$formula = $this->getConditionCase( array( 'type' => 'ref', 'property' => $condition['right'] ));
+		
+		if( $formula )
+		{
+			$condition['right'] = $formula;
+			$condition['rightdatatype'] = \damix\engines\orm\request\OrmPropertyType::ORM_TYPE_FORMULA;
+			$condition['type'] =  \damix\engines\orm\request\OrmPropertyType::ORM_TYPE_FIELD;
+		}
 		
 		switch( $condition['rightdatatype'] )
 		{

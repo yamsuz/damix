@@ -150,6 +150,21 @@ class OrmCondition
         $this->addCondition($property, $operator, $value, $name, \damix\engines\orm\request\structure\OrmDataType::ORM_VARCHAR );
     }
 	
+	public function addContain( string|array|\damix\engines\orm\request\structure\OrmFormula $property, string|array $value, string $name = '' ) : void
+    {
+        $this->addCondition($property, \damix\engines\orm\conditions\OrmOperator::ORM_OP_LIKE, $value, $name, \damix\engines\orm\request\structure\OrmDataType::ORM_VARCHAR );
+    }
+	
+	public function addStringBegin( string|array|\damix\engines\orm\request\structure\OrmFormula $property, string|array $value, string $name = '' ) : void
+    {
+        $this->addCondition($property, \damix\engines\orm\conditions\OrmOperator::ORM_OP_LIKE_BEGIN, $value, $name, \damix\engines\orm\request\structure\OrmDataType::ORM_VARCHAR );
+    }
+	
+	public function addStringEnd( string|array|\damix\engines\orm\request\structure\OrmFormula $property, string|array $value, string $name = '' ) : void
+    {
+        $this->addCondition($property, \damix\engines\orm\conditions\OrmOperator::ORM_OP_LIKE_END, $value, $name, \damix\engines\orm\request\structure\OrmDataType::ORM_VARCHAR );
+    }
+	
 	public function addNull( string|array|\damix\engines\orm\request\structure\OrmFormula $property, string $name = '' ) : void
     {
         $this->addCondition($property, \damix\engines\orm\conditions\OrmOperator::ORM_OP_ISNULL, null, $name, \damix\engines\orm\request\structure\OrmDataType::ORM_VARCHAR );
